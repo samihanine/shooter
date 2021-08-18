@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Shooter</title>
+    <link href="index.css" rel="stylesheet">
+
+    <script src="script/Game.js" type="text/javascript"></script>
+    <script src="script/Asset.js" type="text/javascript"></script>
+    <script src="script/Entity.js" type="text/javascript"></script>
+    <script src="script/Decor.js" type="text/javascript"></script>
+    <script src="script/Sprite.js" type="text/javascript"></script>
+    <script src="script/Maps.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+    <canvas id='canvas'></canvas>
+
+    <div class="interface">
+        
+        <div class="creative picker">
+            <p>Sprites</p>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        window.onload = create;
+
+        let game = new Game();
+
+        function create() {
+            game.load(update);
+        }
+
+        function update() {
+            window.requestAnimationFrame(update);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            game.update();
+        }
+
+    </script>
+    
+</body>
+</html>

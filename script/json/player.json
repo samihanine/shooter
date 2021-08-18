@@ -1,0 +1,9 @@
+{
+    "agent": {
+        "sprite": "green"
+    },
+    
+    "military": {
+        "sprite": "orange"
+    }
+}

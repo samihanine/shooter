@@ -1,0 +1,13 @@
+{
+    "grass": {
+        "img": "image/tiles/tile_03.png"
+    },
+    
+    "road": {
+        "img": "image/tiles/tile_86.png"
+    },
+
+    "water": {
+        "img": "image/tiles/tile_19.png"
+    }
+}

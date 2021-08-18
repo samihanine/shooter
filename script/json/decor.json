@@ -1,0 +1,10 @@
+{
+    "grass": {
+        "sprite": "grass"
+    },
+    
+    "water": {
+        "sprite": "water",
+        "collision": true
+    }
+}
