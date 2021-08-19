@@ -4,12 +4,10 @@ class Maps {
     constructor(settings) {
         settings = settings || {};
 
-        this._name = settings.name || `map_${Object.keys(Sprite.data).length}`;
+        this._name = settings.name || `map_${Object.keys(Maps.data).length}`;
 
         this._decors = settings.decors.map(item => {
-            const decor = new Decor(Decor.data[item.decor])
-            decor.x = item.x;
-            decor.y = item.y;
+            const decor = new Decor(item)
             return decor;
         });
 

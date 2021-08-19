@@ -6,12 +6,12 @@ class Asset {
         this._x = settings.x || 0;
         this._y = settings.y || 0;
 
-        this._sprite = settings.sprite || 'blue';
-
-        this._name = settings.name || "unknown";
-
         this._select = false;
-        this._rotate = 0;
+        this._rotate = settings.rotate || 0;
+
+        this._src = settings.src || "image/tiles/tile_03.png";
+        this._img = new Image();
+        this._img.src = this._src;
     }
 
     get x() {
@@ -30,20 +30,17 @@ class Asset {
         this._y = y;
     }
 
-    get sprite() {
-        return this._sprite;
+    get img(){
+        return this._img;
     }
 
-    set sprite(sprite) {
-        this._sprite = Sprite.data[sprite] ? sprite : this._sprite;
+    set src(url){
+        this._src = url;
+        this._img.src = url;
     }
 
-    get name() {
-        return this._name;
-    }
-
-    set name(name) {
-        this._name = name;
+    get src(){
+        return this._src;
     }
 
     get select() {
@@ -63,7 +60,19 @@ class Asset {
     }
 
     draw(size) {
-        Sprite.data[this.sprite]?.draw({x: this.x*size, y: this.y*size, w: size, h: size, r: this.rotate});
+        const x = this.x*size;
+        const y = this.y*size;
+        const w = size;
+        const h = size;
+        const center_x = x+w/2;
+        const center_y = y+h/2;
+
+        ctx.save();
+        ctx.translate(center_x, center_y);
+        ctx.rotate(this.rotate * Math.PI / 180);
+        ctx.translate(-center_x, -center_y);
+        ctx.drawImage(this._img,x,y,w,h);
+        ctx.restore();
 
         if (this.select) {
             ctx.strokeStyle = "blue";

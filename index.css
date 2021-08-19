@@ -13,7 +13,7 @@ body {
   z-index: 100;
 }
 
-.interface .creative {
+.interface .creator {
   position: absolute;
   left: 0;
   top: 0;
@@ -25,7 +25,7 @@ body {
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.interface .creative > p {
+.interface .creator > p {
   height: 30px;
   border-bottom: solid 1px grey;
   margin: 0;
@@ -37,8 +37,8 @@ body {
   padding-top: 3px;
 }
 
-.interface .creative__picker {
-  height: calc(100% - 110px - 20px);
+.interface .creator__picker {
+  height: calc(100% - 105px - 20px);
   overflow-y: scroll !important;
   border-bottom: solid 1px grey;
   display: -webkit-box;
@@ -55,7 +55,7 @@ body {
   padding: 10px;
 }
 
-.interface .creative__picker .container {
+.interface .creator__picker .container {
   border: solid 1px grey;
   padding: 10px;
   border-radius: 3px;
@@ -73,22 +73,22 @@ body {
   cursor: pointer;
 }
 
-.interface .creative__picker .container p {
+.interface .creator__picker .container p {
   text-align: center;
   margin: 0;
   margin-top: 5px;
 }
 
-.interface .creative__picker .container img {
+.interface .creator__picker .container img {
   width: 80px;
 }
 
-.interface .creative__picker .container:hover {
+.interface .creator__picker .container:hover {
   background-color: rgba(255, 255, 255, 0.384);
 }
 
-.interface .creative__option {
-  height: 80px;
+.interface .creator__option {
+  height: 70px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -100,22 +100,30 @@ body {
           align-items: center;
 }
 
-.interface .creative__option img {
+.interface .creator__option img {
   width: 40px;
   padding: 5px;
   border: solid 1px grey;
   background-color: white;
+  cursor: pointer;
 }
 
-.interface .creative__option .select {
+.interface .creator__option p {
+  width: 45px;
+  font-size: 18px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.interface .creator__option .select {
   border: solid 2px black;
 }
 
-.interface .creative--second {
+.interface .creator--second {
   left: calc(100vw - 200px);
 }
 
-.interface .creative__settings {
+.interface .creator__settings {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -126,9 +134,13 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  height: calc(100% - 175px - 20px);
+  padding: 10px;
+  overflow-y: scroll !important;
+  border-bottom: solid 1px grey;
 }
 
-.interface .creative__settings label {
+.interface .creator__settings label {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -144,12 +156,12 @@ body {
   width: 100%;
 }
 
-.interface .creative__settings label p {
+.interface .creator__settings label p {
   margin: 0;
   margin-bottom: 5px;
 }
 
-.interface .creative__settings label img {
+.interface .creator__settings label img {
   width: 50px;
   cursor: pointer;
 }

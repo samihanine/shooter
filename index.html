@@ -11,9 +11,9 @@
     <script src="script/Asset.js" type="text/javascript"></script>
     <script src="script/Entity.js" type="text/javascript"></script>
     <script src="script/Decor.js" type="text/javascript"></script>
-    <script src="script/Sprite.js" type="text/javascript"></script>
     <script src="script/Maps.js" type="text/javascript"></script>
-    <script src="script/Creative.js" type="text/javascript"></script>
+    <script src="script/Interface.js" type="text/javascript"></script>
+    <script src="script/Camera.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -22,22 +22,22 @@
 
     <div class="interface">
         
-        <div class="creative">
-            <p>Sprite</p>
+        <div class="creator">
+            <p>Decor</p>
 
-            <div class="creative__picker"></div>
+            <div class="creator__picker"></div>
 
-            <div class="creative__option">
+            <div class="creator__option">
                 <img src="" id="insert-picker" />
                 <img src="https://img.icons8.com/ios-glyphs/300/000000/cursor--v1.png" id="select-picker"/>
                 <img src="https://img.icons8.com/material-rounded/240/ff0000/trash.png" id="trash-picker"/>
             </div>
         </div>
 
-        <div class="creative creative--second">
+        <div class="creator creator--second">
             <p>Paramètre</p>
 
-            <div class="creative__settings">
+            <div class="creator__settings">
                 <label>
                     <p>Collision</p>
                     <input type="checkbox" id="collision" name="collision">
@@ -48,6 +48,18 @@
                     <img id="rotate" src="https://img.icons8.com/material-rounded/500/000000/rotate.png"/>
                 </label>
 
+            </div>
+
+            <div class="creator__option">
+                <img src="https://img.icons8.com/ios/500/000000/zoom-in--v1.png" id="zoom-in"/>
+                <p id="zoom-text">50</p>
+                <img src="https://img.icons8.com/ios/500/000000/zoom-out.png" id="zoom-out"/>
+            </div>
+
+            <div class="creator__option">
+                <img src="https://img.icons8.com/ios-glyphs/300/000000/save--v1.png" id="save"/>
+                <img src="https://img.icons8.com/material-outlined/320/000000/settings.png" id="exit"/>
+                <img src="https://img.icons8.com/windows/500/000000/macos-close.png" id="close"/>
             </div>
         </div>
 

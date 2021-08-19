@@ -1,25 +1,21 @@
 class Game {
 
     constructor() {
-        this.scale = 50;
+        this._initial_scale = 50;
+        this._scale = this._initial_scale;
 
         this.key;
         this.mouse;
 
-        this.player = new Player(Entity.data.agent); 
-        this.current_map = "village";
-        this.camera = { 
-            x: 50, 
-            y: 0,
-            speed: 10,
-            mode: "creative",
-        };
+        this._current_map = "village";
 
-        this.creative;
+        this.player = new Player(); 
+        this.camera = new Camera({speed: this.scale, mode: "creator"});
+        this.interface = new Interface();
     }
 
     load(callback) {
-        const json_files = ["bot", "player", "decor", "sprite","maps"];
+        const json_files = ["bot", "player", "decor","maps"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -50,7 +46,6 @@ class Game {
                     case "bot": new Bot(json[key]); break;
                     case "decor": new Decor(json[key]); break;
                     case "player": new Player(json[key]); break;
-                    case "sprite": new Sprite(json[key]); break;
                     case "maps": new Maps(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
@@ -66,22 +61,23 @@ class Game {
     ini(){
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
-            this.mouse_event();
+            
+            this.interface.mouse_event(this.camera.mode);
         }
 
         document.onkeydown = (event) => {
             this.key = event.key;
-            this.key_event();
+
+            this.interface.key_event(this.camera.mode);
         }
 
-        this.creative = new Creative();
-        this.creative.ini();
+        this.interface.ini();
     }
 
     mouse_to_pos({ x, y }){
         return { 
-            x: Math.round(Math.floor(x/this.scale) - Math.round(this.camera.x/this.scale)), 
-            y: Math.round(Math.floor(y/this.scale) - Math.round(this.camera.y/this.scale))
+            x: Math.floor(x/this.scale) - Math.floor(this.camera.x/this.scale), 
+            y: Math.floor(y/this.scale) - Math.floor(this.camera.y/this.scale)
         };
     }
 
@@ -89,25 +85,6 @@ class Game {
         this.decors.forEach(item => {
             item.draw(this.scale);
         })
-    }
-
-    mouse_event() {
-        switch(this.camera.mode) {
-            case "creative":
-                this.creative.mouse_event();
-            break;
-        }
-    }
-
-    key_event() {
-        switch(this.camera.mode) {
-            case "creative":
-                if (this.key === "ArrowRight") this.camera.x -= this.camera.speed;
-                if (this.key === "ArrowUp") this.camera.y += this.camera.speed;
-                if (this.key === "ArrowLeft") this.camera.x += this.camera.speed;
-                if (this.key === "ArrowDown") this.camera.y -= this.camera.speed;
-            break;
-        }
     }
 
     update() {
@@ -124,6 +101,33 @@ class Game {
 
     set decors(decors) {
         Maps.data[this.current_map].decors = decors;
+    }
+
+    get scale() {
+        return this._scale;
+    }
+
+    set scale(scale) {
+        this._scale = (scale > 1) ? scale : this.initial_scale;
+        document.getElementById("zoom-text").innerHTML = this._scale;
+        this.camera.speed = this._scale;
+    }
+
+
+    get initial_scale() {
+        return this._initial_scale;
+    }
+
+    set initial_scale(initial_scale) {
+        this._initial_scale = initial_scale;
+    }
+
+    get current_map() {
+        return this._current_map;
+    }
+
+    set current_map(current_map) {
+        this._current_map = current_map;
     }
 
 }
