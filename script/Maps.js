@@ -19,4 +19,8 @@ class Maps {
     get decors() {
         return this._decors;
     }
+
+    set decors(decors) {
+        this._decors = decors;
+    }
 }

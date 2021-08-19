@@ -3,20 +3,23 @@ class Game {
     constructor() {
         this.scale = 50;
 
-        this.key = [];
-        this.mouse = false;
+        this.key;
+        this.mouse;
 
         this.player = new Player(Entity.data.agent); 
         this.current_map = "village";
         this.camera = { 
             x: 50, 
             y: 0,
-            mode: "creative"
+            speed: 10,
+            mode: "creative",
         };
+
+        this.creative;
     }
 
     load(callback) {
-        const json_files = ["bot", "player", "decor", "shape", "texture","maps"];
+        const json_files = ["bot", "player", "decor", "sprite","maps"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -47,8 +50,7 @@ class Game {
                     case "bot": new Bot(json[key]); break;
                     case "decor": new Decor(json[key]); break;
                     case "player": new Player(json[key]); break;
-                    case "shape": new Shape(json[key]); break;
-                    case "texture": new Texture(json[key]); break;
+                    case "sprite": new Sprite(json[key]); break;
                     case "maps": new Maps(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
@@ -62,25 +64,24 @@ class Game {
     }
 
     ini(){
-        document.addEventListener('keydown', (event) => {
-            this.key[event.keyCode || event.which] = true;
-            this.key_event();
-        });
-        document.addEventListener('keyup', (event) => {
-            this.key[event.keyCode || event.which] = false;
-            this.key_event();
-        });
-
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
-            this.mouse_event()
+            this.mouse_event();
         }
+
+        document.onkeydown = (event) => {
+            this.key = event.key;
+            this.key_event();
+        }
+
+        this.creative = new Creative();
+        this.creative.ini();
     }
 
     mouse_to_pos({ x, y }){
         return { 
-            x: Math.floor(x/this.scale) - this.camera.x/this.scale, 
-            y: Math.floor(y/this.scale) - this.camera.y/this.scale
+            x: Math.round(Math.floor(x/this.scale) - Math.round(this.camera.x/this.scale)), 
+            y: Math.round(Math.floor(y/this.scale) - Math.round(this.camera.y/this.scale))
         };
     }
 
@@ -93,12 +94,7 @@ class Game {
     mouse_event() {
         switch(this.camera.mode) {
             case "creative":
-                const pos = this.mouse_to_pos({x: this.mouse.x, y: this.mouse.y});
-
-                const decor = new Decor(Decor.data["grass"]);
-                decor.x = pos.x;
-                decor.y = pos.y;
-                this.decors.push(decor);
+                this.creative.mouse_event();
             break;
         }
     }
@@ -106,7 +102,10 @@ class Game {
     key_event() {
         switch(this.camera.mode) {
             case "creative":
-                if (this.key[39]) this.camera.x -= 5;
+                if (this.key === "ArrowRight") this.camera.x -= this.camera.speed;
+                if (this.key === "ArrowUp") this.camera.y += this.camera.speed;
+                if (this.key === "ArrowLeft") this.camera.x += this.camera.speed;
+                if (this.key === "ArrowDown") this.camera.y -= this.camera.speed;
             break;
         }
     }
@@ -116,12 +115,15 @@ class Game {
         
         this.draw_map();
 
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.mouse = false;
+        ctx.translate(-this.camera.x, -this.camera.y);
     }
 
     get decors() {
         return Maps.data[this.current_map].decors;
+    }
+
+    set decors(decors) {
+        Maps.data[this.current_map].decors = decors;
     }
 
 }

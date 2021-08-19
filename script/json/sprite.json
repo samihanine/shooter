@@ -1,0 +1,26 @@
+{
+    "grass": {
+        "src": "image/tiles/tile_03.png"
+    },
+    
+    "road": {
+        "src": "image/tiles/tile_86.png"
+    },
+
+    "water": {
+        "src": "image/tiles/tile_19.png"
+    },
+
+    "test": {
+        "src": "image/tiles/tile_90.png"
+    },
+
+    "bush": {
+        "src": "image/tiles/tile_183.png",
+        "small": true
+    },
+    "tree": {
+        "src": "image/tiles/tile_181.png",
+        "small": true
+    }
+}

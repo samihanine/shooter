@@ -9,6 +9,9 @@ class Asset {
         this._sprite = settings.sprite || 'blue';
 
         this._name = settings.name || "unknown";
+
+        this._select = false;
+        this._rotate = 0;
     }
 
     get x() {
@@ -43,7 +46,29 @@ class Asset {
         this._name = name;
     }
 
+    get select() {
+        return this._select;
+    }
+
+    set select(select) {
+        this._select = select;
+    }
+
+    get rotate() {
+        return this._rotate;
+    }
+
+    set rotate(rotate) {
+        this._rotate = rotate;
+    }
+
     draw(size) {
-        Sprite.data[this.sprite]?.draw({x: this.x*size, y: this.y*size, w: size, h: size});
+        Sprite.data[this.sprite]?.draw({x: this.x*size, y: this.y*size, w: size, h: size, r: this.rotate});
+
+        if (this.select) {
+            ctx.strokeStyle = "blue";
+            ctx.lineWeight = 3;
+            ctx.strokeRect(this.x*size, this.y*size, size, size)
+        }
     }
 }

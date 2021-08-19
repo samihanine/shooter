@@ -1,3 +1,6 @@
+$blue: #1db3da;
+$beige: #ffe1badc;
+
 body {
     padding: 0;
     margin: 0;
@@ -11,4 +14,115 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: 100;
+
+    .creative {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 100vh;
+        border: solid 1px grey;
+        background-color: $beige;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+        & > p {
+            height: 30px;
+            border-bottom: solid 1px grey;
+            margin: 0;
+            background-color: $blue;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            font-size: 20px;
+            padding-top: 3px;
+        }
+
+        &__picker {
+            height: calc(100% - 110px - 20px);
+            overflow-y: scroll !important;
+            border-bottom: solid 1px grey;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+
+            .container {
+                border: solid 1px grey;
+                padding: 10px;
+                border-radius: 3px;
+                width: 160px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                cursor: pointer;
+
+                p {
+                    text-align: center;
+                    margin: 0;
+                    margin-top: 5px;
+                }
+
+                img {
+                    width: 80px
+                }
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.384);
+                }
+            }
+        }
+
+        &__option {
+            height: 80px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+
+
+            img {
+                width: 40px;
+                padding: 5px;
+                border: solid 1px grey;
+                background-color: white;
+            }
+
+            .select {
+                border: solid 2px black;
+            }
+
+        }
+
+        &--second {
+            left: calc(100vw - 200px);
+        }
+
+        &__settings {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border-bottom: solid 1px grey;
+                padding: 10px 0;
+                width: 100%;
+
+                p {
+                    margin: 0;
+                    margin-bottom: 5px;
+                }
+
+                img {
+                    width: 50px;
+                    cursor: pointer;
+                }
+
+            }
+        }
+
+    }
+
 }
