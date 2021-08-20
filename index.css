@@ -2,6 +2,7 @@ body {
   padding: 0;
   margin: 0;
   overflow: hidden;
+  cursor: url("https://img.icons8.com/ios-glyphs/20/000000/define-location.png"), auto;
 }
 
 .interface {
@@ -14,6 +15,11 @@ body {
 }
 
 .interface .creator {
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   position: absolute;
   left: 0;
   top: 0;
@@ -23,6 +29,7 @@ body {
   background-color: #ffe1badc;
   -webkit-box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  cursor: default;
 }
 
 .interface .creator > p {

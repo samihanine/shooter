@@ -4,7 +4,9 @@
 
         "player": {
             "src": "image/entity/soldier1/soldier1_stand.png", 
-            "life": 500
+            "life": 500,
+            "x": 5,
+            "y": 10
         },
 
         "bots": [],

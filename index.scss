@@ -5,6 +5,8 @@ body {
     padding: 0;
     margin: 0;
     overflow: hidden;
+
+    cursor: url("https://img.icons8.com/ios-glyphs/20/000000/define-location.png"), auto;
 }
 
 .interface {
@@ -16,6 +18,8 @@ body {
     z-index: 100;
 
     .creator {
+        display: none;
+        flex-direction: column;
         position: absolute;
         left: 0;
         top: 0;
@@ -24,6 +28,7 @@ body {
         border: solid 1px grey;
         background-color: $beige;
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        cursor: default;
 
         & > p {
             height: 30px;

@@ -5,6 +5,7 @@ class Camera {
         this._x = settings.x || 0; 
         this._y = settings.y || 0;
         this._mode = settings.mode || "normal";
+        this._speed = settings.speed || 10;
     }
 
     get x() {
@@ -32,9 +33,17 @@ class Camera {
         
         this._mode = all_mode.find((item) => mode == item) ? mode : this._mode;
         game.scale = game.initial_scale;
-        game.interface.change_mode();
+        game.ui.change_mode();
 
         if (mode === "normal") game.player.update_camera();
+    }
+
+    get speed() {
+        return this._speed;
+    }
+
+    set speed(speed) {
+        this._speed = speed;
     }
 
 }

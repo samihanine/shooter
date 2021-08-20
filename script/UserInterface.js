@@ -1,4 +1,4 @@
-class Interface {
+class UserInterface {
 
     constructor() {
         this._tool = "insert";
@@ -170,15 +170,19 @@ class Interface {
         }
     }
 
-    key_event(mode) {
-        switch (mode) {
+    key_event() {
+        switch (game.camera.mode) {
             case "creator":
-                if (game.key === "ArrowRight") game.camera.x = game.camera.x - game.scale;
-                if (game.key === "ArrowUp") game.camera.y = game.camera.y + game.scale
-                if (game.key === "ArrowLeft") game.camera.x = game.camera.x + game.scale;
-                if (game.key === "ArrowDown") game.camera.y = game.camera.y - game.scale;
+                if (game.key[39] || game.key[68]) game.camera.x = game.camera.x - game.camera.speed;
+                else if (game.key[38] || game.key[87]) game.camera.y = game.camera.y + game.camera.speed;
+                else if (game.key[37] || game.key[65]) game.camera.x = game.camera.x + game.camera.speed;
+                else if (game.key[40] || game.key[83]) game.camera.y = game.camera.y - game.camera.speed;
             break;
         }
+    }
+
+    update() {
+        this.key_event();
     }
 
     change_mode() {

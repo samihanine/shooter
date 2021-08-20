@@ -4,13 +4,13 @@ class Game {
         this._initial_scale = 50;
         this._scale = this._initial_scale;
 
-        this.key;
-        this.mouse;
+        this._key = [];
+        this._mouse;
 
         this._current_map = "village";
 
-        this.camera = new Camera({speed: this.scale, mode: "creator"});
-        this.interface = new Interface();
+        this._camera = new Camera();
+        this._ui = new UserInterface();
     }
 
     load(callback) {
@@ -59,25 +59,30 @@ class Game {
     ini(){
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
-            
-            this.interface.mouse_event(this.camera.mode);
-            
+            this.ui.mouse_event(this.camera.mode);
         }
 
-        document.onkeydown = (event) => {
-            this.key = event.key;
+        window.addEventListener('keydown', (e) => {
+            this.key[e.keyCode] = true;
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            this.key[e.keyCode] = false;
+        });
 
-            this.interface.key_event(this.camera.mode);
-            if (this.camera.mode === "normal") this.player.key_event();
+        document.onmousemove = event => {
+            this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
         }
 
-        this.interface.ini();
+        this.camera.mode = "normal";
+
+        this.ui.ini();
     }
 
     mouse_to_pos({ x, y }){
         return { 
-            x: Math.floor(x/this.scale) - Math.floor((this.camera.x+window.innerWidth/2)/this.scale), 
-            y: Math.floor(y/this.scale) - Math.floor((this.camera.y+window.innerHeight/2)/this.scale) 
+            x: Math.floor((x/this.scale) - (this.camera.x+window.innerWidth/2)/this.scale+1/3), 
+            y: Math.floor((y/this.scale) - (this.camera.y+window.innerHeight/2)/this.scale+1/3)
         };
     }
 
@@ -97,8 +102,12 @@ class Game {
         this.draw_map();
         this.draw_player();
 
+        this.ui.update();
+        if (this.camera.mode === "normal") this.player.update();
+
         ctx.translate(-this.camera.x, -this.camera.y);
     }
+
 
     get decors() {
         return World.data[this.current_map].decors;
@@ -157,4 +166,35 @@ class Game {
         this._current_map = current_map;
     }
 
+    get key() {
+        return this._key;
+    }
+
+    set key(key) {
+        this._key = key;
+    }
+
+    get mouse() {
+        return this._mouse;
+    }
+
+    set mouse(mouse) {
+        this._mouse = mouse;
+    }
+
+    get camera() {
+        return this._camera;
+    }
+
+    set camera(camera) {
+        this._camera = camera;
+    }
+
+    get ui() {
+        return this._ui;
+    }
+
+    set ui(ui) {
+        this._ui = ui;
+    }
 }

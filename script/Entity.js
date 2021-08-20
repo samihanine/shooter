@@ -13,7 +13,7 @@ class Entity extends Asset {
         this._side = settings.side || 0;
         this._dir = settings.dir || "";
         this._damage = settings.damage || 10;
-        this._speed = settings.speed || 0.2;
+        this._speed = settings.speed || 0.1;
 
         // adding the object to the data array
         if (settings._template) {
@@ -174,24 +174,32 @@ class Player extends Entity {
     }
 
     key_event(){
-        if (game.key === "ArrowRight") this.moove_right();
-        else if (game.key === "ArrowUp") this.moove_up();
-        else if (game.key === "ArrowLeft") this.moove_left();
-        else if (game.key === "ArrowDown") this.moove_down();
+        if (game.key[39] || game.key[68]) this.moove_right();
+        else if (game.key[38] || game.key[87]) this.moove_up();
+        else if (game.key[37] || game.key[65]) this.moove_left();
+        else if (game.key[40] || game.key[83]) this.moove_down();
         else return;
 
-        this.has_moove()
-    }
-
-    has_moove() {
         this.update_camera();
         this.collision();
     }
 
     collision() {
-        const bots = this.check_collision().bots;
-        const projectiles = this.check_collision().projectiles;
+        const { bots, projectiles } = this.check_collision();
+    }
 
+    rotation(){
+        const x1 = game.mouse.x;
+        const y1 = game.mouse.y;
+        const x2 = window.innerWidth/2;
+        const y2 = window.innerHeight/2;
+        const angle = Math.atan2(y2-y1,x2-x1) * (180/Math.PI);
+
+        this.rotate = angle + 180;
     }
     
+    update() {
+        this.key_event();
+        this.rotation();
+    }
 }

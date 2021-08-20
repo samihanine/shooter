@@ -4,7 +4,7 @@ class World {
     constructor(settings) {
         settings = settings || {};
 
-        this._name = settings.name || `map_${Object.keys(World.data).length}`;
+        this._name = settings.name || `world_${Object.keys(World.data).length}`;
 
         this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
         this._bots = settings.bots ? settings.bots.map(item => new Bots(item)) : [];

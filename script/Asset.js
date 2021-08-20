@@ -88,11 +88,15 @@ class Asset {
         
         x = x + 0.5;
         y = y + 0.5;
-        
+
+        const condition = (x2,y2) => {
+            return Math.floor(x2) === Math.floor(x) && Math.floor(y2) == Math.floor(y);
+        }
+
         return {
-            decors: game.decors.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y)),
-            bots: game.bots.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y)),
-            projectiles: game.projectiles.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y))
+            decors: game.decors.filter(item => condition(item.x,item.y)),
+            bots: game.bots.filter(item => condition(item.x,item.y)),
+            projectiles: game.projectiles.filter(item => condition(item.x,item.y))
         }
         
     }
