@@ -1,0 +1,11 @@
+{
+    "agent": {
+        "src": "image/entity/soldier1/soldier1_stand.png", 
+        "life": 500
+    },
+    "zombie": {
+        "src": "image/entity/zombie1/zoimbie1_stand.png", 
+        "life": 100,
+        "damage": 20
+    }
+}

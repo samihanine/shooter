@@ -19,7 +19,7 @@ class Asset {
     }
 
     set x(x) {
-        this._x = x;
+        this._x = Math.round(x * 10) / 10;
     }
 
     get y() {
@@ -27,7 +27,7 @@ class Asset {
     }
 
     set y(y) {
-        this._y = y;
+        this._y = Math.round(y * 10) / 10;
     }
 
     get img(){
@@ -74,10 +74,26 @@ class Asset {
         ctx.drawImage(this._img,x,y,w,h);
         ctx.restore();
 
-        if (this.select) {
+        if (this.select && game.camera.mode === "creator") {
             ctx.strokeStyle = "blue";
             ctx.lineWeight = 3;
             ctx.strokeRect(this.x*size, this.y*size, size, size)
         }
+    }
+
+    check_collision(pos){
+        if (!pos) pos = {};
+        let x = pos.x || this.x;
+        let y = pos.y || this.y;
+        
+        x = x + 0.5;
+        y = y + 0.5;
+        
+        return {
+            decors: game.decors.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y)),
+            bots: game.bots.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y)),
+            projectiles: game.projectiles.filter(item => Math.floor(item.x) === Math.floor(x) && Math.floor(item.y) == Math.floor(y))
+        }
+        
     }
 }

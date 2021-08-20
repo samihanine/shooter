@@ -7,9 +7,6 @@ class Interface {
         this.insert = document.getElementById("insert-picker");
         this.select = document.getElementById("select-picker");
         this.trash = document.getElementById("trash-picker");
-
-        this.rotate = document.getElementById("rotate");
-        this.collision = document.getElementById("collision");
     }
 
     get tool() {
@@ -32,8 +29,11 @@ class Interface {
         if (this.current) this.current.select = false;
         if (current) current.select = true;
         this._current = current;
-
-        if (this._current) this.collision.checked = this._current.collision;
+        
+        if (this._current) {
+            document.getElementById("collision").checked = this._current.collision;
+            document.getElementById("rotate-input").value = this._current.rotate;
+        }
     }
 
     ini() {
@@ -56,12 +56,19 @@ class Interface {
             this.tool = "trash";
         }
 
-        this.rotate.onclick = () => {
-            if (this.current) this.current.rotate = this.current.rotate + 90;
+        document.getElementById("rotate").onclick = () => {
+            if (this.current) {
+                this.current.rotate = this.current.rotate + 90;
+                document.getElementById("rotate-input").value = this._current.rotate;
+            }
         }
 
-        this.collision.onchange = () => {
-            if (this.current) this.current.collision = this.collision.checked;
+        document.getElementById("rotate-input").onchange = (e) => {
+            if (this.current) this.current.rotate = e.target.value;
+        }
+
+        document.getElementById("collision").onchange = (e) => {
+            if (this.current) this.current.collision = e.target.checked;
         }
 
         document.getElementById("zoom-out").onclick = () => {
@@ -166,23 +173,27 @@ class Interface {
     key_event(mode) {
         switch (mode) {
             case "creator":
-                if (game.key === "ArrowRight") game.camera.x = game.camera.x - game.camera.speed;
-                if (game.key === "ArrowUp") game.camera.y = game.camera.y + game.camera.speed;
-                if (game.key === "ArrowLeft") game.camera.x = game.camera.x + game.camera.speed;
-                if (game.key === "ArrowDown") game.camera.y = game.camera.y - game.camera.speed;
+                if (game.key === "ArrowRight") game.camera.x = game.camera.x - game.scale;
+                if (game.key === "ArrowUp") game.camera.y = game.camera.y + game.scale
+                if (game.key === "ArrowLeft") game.camera.x = game.camera.x + game.scale;
+                if (game.key === "ArrowDown") game.camera.y = game.camera.y - game.scale;
             break;
         }
     }
 
     change_mode() {
         const creator_divs = document.getElementsByClassName("creator");
-        console.log(creator_divs)
-        for(let i=0; i<creator_divs.length; i++){
-            creator_divs[i].style.display = "none";
+        const normal_divs = document.getElementsByClassName("normal");
+
+        for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "none"; }
+        for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
+
+        if (game.camera.mode == "normal") {
+            for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
         }
 
         if (game.camera.mode == "creator") {
-
+            for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
         }
     }
 

@@ -10,6 +10,11 @@ class Entity extends Asset {
         this._max_life = settings.max_life || 100;
         this._life = this.life || this._max_life;
 
+        this._side = settings.side || 0;
+        this._dir = settings.dir || "";
+        this._damage = settings.damage || 10;
+        this._speed = settings.speed || 0.2;
+
         // adding the object to the data array
         if (settings._template) {
             this._template = false;
@@ -19,6 +24,38 @@ class Entity extends Asset {
     }
 
     /* ---- getters & setters ---- */
+
+    get damage() {
+        return this._damage;
+    }
+
+    set damage(damage) {
+        this._damage = damage;
+    }
+
+    get side() {
+        return this._side;
+    }
+
+    set side(side) {
+        this._side = side;
+    }
+
+    get speed() {
+        return this._speed;
+    }
+
+    set speed(speed) {
+        this._speed = speed;
+    }
+
+    get dir() {
+        return this._dir;
+    }
+
+    set dir(dir) {
+        this._dir = dir;
+    }
 
     get speed() {
         return this._speed;
@@ -38,7 +75,41 @@ class Entity extends Asset {
             this.death();
         }
 
-        this._life = this.max_life > life ? life : this.max_life;
+        this._life = (this.max_life > life) ? life : this.max_life;
+    }
+
+    get max_life() {
+        return this._max_life;
+    }
+
+    set max_life(max_life) {
+        this._max_life = max_life > 0 ? max_life : this.max_life;
+    }
+
+    moove_left(){
+        if (this.test_moove({x: this.x - this.speed, y : this.y })) this.x = this.x - this.speed;        
+    }
+
+    moove_right(){
+        if (this.test_moove({x: this.x + this.speed, y : this.y })) this.x = this.x + this.speed;        
+    }
+
+    moove_up(){
+        if (this.test_moove({x: this.x, y : this.y - this.speed})) this.y = this.y - this.speed;        
+    }
+
+    moove_down(){
+        if (this.test_moove({x: this.x, y : this.y + this.speed})) this.y = this.y + this.speed;        
+    }
+
+    test_moove({ x , y }){
+        let operation = true;
+        const array = this.check_collision({x: x, y: y }).decors;
+        if (!array.length) operation = false;
+        array.forEach(item => {
+            if (item.collision) operation = false;
+        });;
+        return operation;
     }
 
     /* ---- methods ---- */
@@ -79,7 +150,7 @@ class Bot extends Entity {
         return this._target;
     }
 
-    set direction(target) {
+    set target(target) {
         this._target = target;
     }
 
@@ -91,21 +162,36 @@ class Player extends Entity {
         super(settings);
 
         settings = settings || {};
-
-        this._direction = settings.direction;
     }
 
-    get direction() {
-        return this._direction;
-    }
-
-    set direction(direction) {
-        this._direction = direction;
+    update_camera() {
+        game.camera.x = -this.x*game.scale;
+        game.camera.y = -this.y*game.scale;
     }
 
     death() {
-        console.log("game over")
         super.death();
+    }
+
+    key_event(){
+        if (game.key === "ArrowRight") this.moove_right();
+        else if (game.key === "ArrowUp") this.moove_up();
+        else if (game.key === "ArrowLeft") this.moove_left();
+        else if (game.key === "ArrowDown") this.moove_down();
+        else return;
+
+        this.has_moove()
+    }
+
+    has_moove() {
+        this.update_camera();
+        this.collision();
+    }
+
+    collision() {
+        const bots = this.check_collision().bots;
+        const projectiles = this.check_collision().projectiles;
+
     }
     
 }

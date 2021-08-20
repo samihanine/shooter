@@ -164,5 +164,10 @@ body {
 .interface .creator__settings label img {
   width: 50px;
   cursor: pointer;
+  margin: 10px;
+}
+
+.interface .creator__settings label input {
+  width: 40px;
 }
 /*# sourceMappingURL=index.css.map */

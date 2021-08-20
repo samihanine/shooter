@@ -9,13 +9,12 @@ class Game {
 
         this._current_map = "village";
 
-        this.player = new Player(); 
         this.camera = new Camera({speed: this.scale, mode: "creator"});
         this.interface = new Interface();
     }
 
     load(callback) {
-        const json_files = ["bot", "player", "decor","maps"];
+        const json_files = ["entity", "decor", "world"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -43,10 +42,9 @@ class Game {
                 json[key]._template = true;
 
                 switch(name){
-                    case "bot": new Bot(json[key]); break;
                     case "decor": new Decor(json[key]); break;
-                    case "player": new Player(json[key]); break;
-                    case "maps": new Maps(json[key]); break;
+                    case "entity": new Entity(json[key]); break;
+                    case "world": new World(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
                     break;
@@ -63,12 +61,14 @@ class Game {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
             
             this.interface.mouse_event(this.camera.mode);
+            
         }
 
         document.onkeydown = (event) => {
             this.key = event.key;
 
             this.interface.key_event(this.camera.mode);
+            if (this.camera.mode === "normal") this.player.key_event();
         }
 
         this.interface.ini();
@@ -76,8 +76,8 @@ class Game {
 
     mouse_to_pos({ x, y }){
         return { 
-            x: Math.floor(x/this.scale) - Math.floor(this.camera.x/this.scale), 
-            y: Math.floor(y/this.scale) - Math.floor(this.camera.y/this.scale)
+            x: Math.floor(x/this.scale) - Math.floor((this.camera.x+window.innerWidth/2)/this.scale), 
+            y: Math.floor(y/this.scale) - Math.floor((this.camera.y+window.innerHeight/2)/this.scale) 
         };
     }
 
@@ -87,20 +87,49 @@ class Game {
         })
     }
 
+    draw_player(){
+        this.player.draw(this.scale);
+    }
+
     update() {
-        ctx.translate(this.camera.x, this.camera.y);
+        ctx.translate(this.camera.x + window.innerWidth/2, this.camera.y+ window.innerHeight/2);
         
         this.draw_map();
+        this.draw_player();
 
         ctx.translate(-this.camera.x, -this.camera.y);
     }
 
     get decors() {
-        return Maps.data[this.current_map].decors;
+        return World.data[this.current_map].decors;
     }
 
     set decors(decors) {
-        Maps.data[this.current_map].decors = decors;
+        World.data[this.current_map].decors = decors;
+    }
+
+    get player(){
+        return World.data[this.current_map].player;
+    }
+
+    set player(player){
+        World.data[this.current_map].player = player;
+    }
+
+    get bots(){
+        return World.data[this.current_map].bots;
+    }
+
+    set bots(bots){
+        World.data[this.current_map].bots = bots;
+    }
+
+    get projectiles(){
+        return World.data[this.current_map].projectiles;
+    }
+
+    set projectiles(projectiles){
+        World.data[this.current_map].projectiles = projectiles;
     }
 
     get scale() {
@@ -108,11 +137,9 @@ class Game {
     }
 
     set scale(scale) {
-        this._scale = (scale > 1) ? scale : this.initial_scale;
+        this._scale = (scale > 0 && scale <= 200) ? scale : this.initial_scale;
         document.getElementById("zoom-text").innerHTML = this._scale;
-        this.camera.speed = this._scale;
     }
-
 
     get initial_scale() {
         return this._initial_scale;
