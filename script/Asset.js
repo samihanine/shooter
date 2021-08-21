@@ -84,6 +84,7 @@ class Asset {
     }
 
     draw(size) {
+        size = size || game.scale;
         const x = this.x*size;
         const y = this.y*size;
         const w = this.w*size;
@@ -106,21 +107,14 @@ class Asset {
     }
 
     check_collision(pos){
-        console.log()
         if (!pos) pos = {};
         let x = pos.x || this.x;
         let y = pos.y || this.y;
-
-        
-        x = x + 0.5;
-        y = y + 0.5;
-
-        const condition = (x2,y2) => {
-            return Math.floor(x2) === Math.floor(x) && Math.floor(y2) == Math.floor(y);
-        }
+        x = x + this.w/2;
+        y = y + this.h/2;
 
         const check = (item) => {
-            return condition(item.x,item.y) || condition(item.x+item.w/2,item.y) || condition(item.x+item.w/2,item.y+item.h/2) || condition(item.x,item.y+item.h/2);
+            return (x >= item.x && x <= item.x+item.w && y >= item.y && y <= item.y+item.h);
         }
 
         return {
@@ -131,3 +125,4 @@ class Asset {
         
     }
 }
+

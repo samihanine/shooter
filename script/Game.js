@@ -76,19 +76,17 @@ class Game {
         
         window.addEventListener('keyup', (e) => {
             this.key[e.keyCode] = false;
-
-            
         });
 
         document.onmousemove = event => {
             this.mouse = { clic: this.mouse?.clic, x: event.clientX, y: event.clientY };
         }
 
-        let zombie = Object.assign(Character.data["zombie"], {target: this.player, side: 2, speed: 0.001});
-        this.bots.push(new Bot(zombie))
-
         this.camera.ini();
         this.ui.ini();
+
+        let zombie = Object.assign(Character.data["zombie"], {target: this.player, side: 2 });
+        this.bots.push(new Bot(zombie));
     }
 
     mouse_to_pos({ x, y }){
@@ -100,17 +98,17 @@ class Game {
 
     draw_map() {
         this.decors.forEach(item => {
-            item.draw(this.scale);
+            item.draw();
         })
     }
 
     draw_player(){
-        this.player.draw(this.scale);
+        this.player.draw();
     }
 
     draw_projectiles(){
         this.projectiles.forEach(item => {
-            item.draw(this.scale);
+            item.draw();
         })
     }
 
@@ -128,7 +126,7 @@ class Game {
 
     draw_bots(){
         this.bots.forEach(item => {
-            item.draw();
+            item.draw(this.scale);
         })
     }
 

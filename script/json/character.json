@@ -6,6 +6,7 @@
     "zombie": {
         "src": "image/entity/zombie1/zombie1_stand.png", 
         "life": 100,
-        "damage": 20
+        "damage": 20,
+        "speed": 0.2
     }
 }

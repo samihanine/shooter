@@ -102,6 +102,7 @@ class Entity extends Asset {
         array.forEach(item => {
             if (item.collision) operation = false;
         });;
+
         return operation;
     }
 
@@ -146,15 +147,29 @@ class Projectile extends Entity {
 
     update() {
         this.moove();
+        this.collision();
     }
 
     moove(){
         let x = Math.cos(this.angle)*this.speed;
         let y = Math.sin(this.angle)*this.speed;
         
-        if (!this.test_moove({x : this.x + x - 0.5, y: this.y + y - 0.5})) this.death();
+        if (!this.test_moove({x : this.x + x, y: this.y + y})) this.death();
         this.x += x;
         this.y += y;
+    }
+
+    collision() {
+        const { bots, projectiles } = this.check_collision();
+
+        bots.forEach(item => {
+            if (item.side != this.side) {
+                item.life -= this.damage;
+                this.death();
+                return;
+            }
+        })
+
     }
 
     death() {
@@ -230,24 +245,49 @@ class Bot extends Character {
     }
 
     update() {
-        return;
         this.moove();
     }
 
     moove() {
         if (!this.target) return;
 
-        let random = Math.floor(Math.random() * 2);
+        const x1 = Math.floor(this.x);
+        const x2 = Math.floor(this.target.x);
+        const y1 = Math.floor(this.y);
+        const y2 = Math.floor(this.target.y);
 
-        if (random == 1) {
-            if (this.x > this.target.x) this.moove_left();
-            else if (this.x < this.target.x) this.moove_right();
-        } else {
-            if (this.y > this.target.y) this.moove_up();
-            else if (this.x < this.target.y) this.moove_down();
+        if (x1 !== x2) {
+            if (x1 > x2) { 
+                this.moove_left();
+            }
+            else if (x1 < x2) {
+                this.moove_right();
+            }
         }
+        if (y1 !== y2) {
+            if (y1 > y2) {
+                this.moove_up();
+            }
+            else if (y1 < y2) {
+                this.moove_down();
+            }
+        }
+
+        let angle = Math.atan2(y2-y1,x2-x1);
+        this._rotate = angle * 180 / Math.PI
     }
 
+    get speed() {
+        return this._speed*0.1;
+    }
+
+    death() {
+        let i;
+        game.bots.forEach((item, index) => {
+            if (item === this) i = index;
+        })
+        game.bots.splice(i,1);
+    }
 }
 
 class Player extends Character {
@@ -269,8 +309,8 @@ class Player extends Character {
 
     key_event(){
         if (game.key[39] || game.key[68]) this.moove_right();
-        else if (game.key[38] || game.key[87]) this.moove_up();
-        else if (game.key[37] || game.key[65]) this.moove_left();
+        else if (game.key[38] || game.key[87] || game.key[90]) this.moove_up();
+        else if (game.key[37] || game.key[65] || game.key[81]) this.moove_left();
         else if (game.key[40] || game.key[83]) this.moove_down();
         else return;
 
@@ -288,7 +328,6 @@ class Player extends Character {
     }
 
     collision() {
-        const { bots, projectiles } = this.check_collision();
     }
 
     rotation(){

@@ -1,12 +1,8 @@
 class UserInterface {
 
     constructor() {
-        this._tool;
+        this._tool = "";
         this._current = null;
-
-        this.insert = document.getElementById("insert-picker");
-        this.select = document.getElementById("select-picker");
-        this.trash = document.getElementById("trash-picker");
     }
 
     get tool() {
@@ -22,9 +18,9 @@ class UserInterface {
             if (this.tool === "select") game.camera.cursor = 'crosshair';            
         }
 
-        this.insert.className = (tool === "insert") ? "select" : "";
-        this.trash.className = (tool === "trash") ? "select" : "";
-        this.select.className = (tool === "select") ? "select" : "";
+        document.getElementById("insert-picker").className = (tool === "insert") ? "select" : "";
+        document.getElementById("trash-picker").className = (tool === "trash") ? "select" : "";
+        document.getElementById("select-picker").className = (tool === "select") ? "select" : "";
     }
 
     get current() {
@@ -39,7 +35,7 @@ class UserInterface {
         if (this._current) {
             document.getElementById("collision").checked = this._current.collision;
             document.getElementById("rotate-input").value = this._current.rotate;
-            this.insert.src = this.current.src;
+            document.getElementById("insert-picker").src = this.current.src;
         }
     }
 
@@ -51,15 +47,15 @@ class UserInterface {
     }
 
     add_listenners() {
-        this.insert.onclick = () => {
+        document.getElementById("insert-picker").onclick = () => {
             this.tool = "insert";
         }
 
-        this.select.onclick = () => {
+        document.getElementById("select-picker").onclick = () => {
             this.tool = "select";
         }
 
-        this.trash.onclick = () => {
+        document.getElementById("trash-picker").onclick = () => {
             this.tool = "trash";
         }
 
@@ -184,8 +180,8 @@ class UserInterface {
         switch (game.camera.mode) {
             case "creator":
                 if (game.key[39] || game.key[68]) game.camera.x = game.camera.x - game.camera.speed;
-                else if (game.key[38] || game.key[87]) game.camera.y = game.camera.y + game.camera.speed;
-                else if (game.key[37] || game.key[65]) game.camera.x = game.camera.x + game.camera.speed;
+                else if (game.key[38] || game.key[87] || game.key[90]) game.camera.y = game.camera.y + game.camera.speed;
+                else if (game.key[37] || game.key[65] || game.key[81]) game.camera.x = game.camera.x + game.camera.speed;
                 else if (game.key[40] || game.key[83]) game.camera.y = game.camera.y - game.camera.speed;
             break;
         }
