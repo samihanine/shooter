@@ -4,7 +4,7 @@
         "life": 500
     },
     "zombie": {
-        "src": "image/entity/zombie1/zoimbie1_stand.png", 
+        "src": "image/entity/zombie1/zombie1_stand.png", 
         "life": 100,
         "damage": 20
     }

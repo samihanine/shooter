@@ -9,7 +9,7 @@ class World {
         this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
         this._bots = settings.bots ? settings.bots.map(item => new Bots(item)) : [];
         this._projectiles = settings.projectiles ? settings.projectiles.map(item => new Projectile(item)) : [];
-        this._player = new Player(settings.player);
+        this._player = settings.player || new Player();
 
         World.data[this._name] = this;
     }

@@ -7,14 +7,15 @@ class Game {
         this._key = [];
         this._mouse;
 
-        this._current_map = "village";
+        this._current_world = "village";
 
         this._camera = new Camera();
         this._ui = new UserInterface();
+        this._player = null;
     }
 
     load(callback) {
-        const json_files = ["entity", "decor", "world"];
+        const json_files = ["character", "projectile", "decor", "world"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -43,7 +44,8 @@ class Game {
 
                 switch(name){
                     case "decor": new Decor(json[key]); break;
-                    case "entity": new Entity(json[key]); break;
+                    case "character": new Character(json[key]); break;
+                    case "projectile": new Projectile(json[key]); break;
                     case "world": new World(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
@@ -57,6 +59,8 @@ class Game {
     }
 
     ini(){
+        this.player = new Player(Object.assign(Character.data["agent"], this.world.player));
+
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
             this.ui.mouse_event(this.camera.mode);
@@ -64,25 +68,33 @@ class Game {
 
         window.addEventListener('keydown', (e) => {
             this.key[e.keyCode] = true;
+
+            if (this.key[32]) {
+                this.camera.mode = (this.camera.mode === "normal") ? "creator" : "normal";
+            }
         });
         
         window.addEventListener('keyup', (e) => {
             this.key[e.keyCode] = false;
+
+            
         });
 
         document.onmousemove = event => {
-            this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
+            this.mouse = { clic: this.mouse?.clic, x: event.clientX, y: event.clientY };
         }
 
-        this.camera.mode = "normal";
+        let zombie = Object.assign(Character.data["zombie"], {target: this.player, side: 2, speed: 0.001});
+        this.bots.push(new Bot(zombie))
 
+        this.camera.ini();
         this.ui.ini();
     }
 
     mouse_to_pos({ x, y }){
         return { 
-            x: Math.floor((x/this.scale) - (this.camera.x+window.innerWidth/2)/this.scale+1/3), 
-            y: Math.floor((y/this.scale) - (this.camera.y+window.innerHeight/2)/this.scale+1/3)
+            x: (x/this.scale) - (this.camera.x+window.innerWidth/2)/this.scale, 
+            y: (y/this.scale) - (this.camera.y+window.innerHeight/2)/this.scale
         };
     }
 
@@ -96,49 +108,81 @@ class Game {
         this.player.draw(this.scale);
     }
 
+    draw_projectiles(){
+        this.projectiles.forEach(item => {
+            item.draw(this.scale);
+        })
+    }
+
+    update_projectiles(){
+        this.projectiles.forEach(item => {
+            item.update();
+        })
+    }
+
+    update_bots(){
+        this.bots.forEach(item => {
+            item.update();
+        })
+    }
+
+    draw_bots(){
+        this.bots.forEach(item => {
+            item.draw();
+        })
+    }
+
     update() {
         ctx.translate(this.camera.x + window.innerWidth/2, this.camera.y+ window.innerHeight/2);
         
         this.draw_map();
         this.draw_player();
+        this.draw_projectiles();
+        this.draw_bots();
 
         this.ui.update();
-        if (this.camera.mode === "normal") this.player.update();
 
+        if (this.camera.mode === "normal") {
+            this.player.update();
+            this.update_projectiles();
+            this.update_bots();
+        }
+
+        if (this.mouse) this.mouse.clic = -1;
         ctx.translate(-this.camera.x, -this.camera.y);
     }
 
 
     get decors() {
-        return World.data[this.current_map].decors;
+        return this.world.decors;
     }
 
     set decors(decors) {
-        World.data[this.current_map].decors = decors;
+        this.world.decors = decors;
     }
 
     get player(){
-        return World.data[this.current_map].player;
+        return this._player;
     }
 
     set player(player){
-        World.data[this.current_map].player = player;
+        this._player = player;
     }
 
     get bots(){
-        return World.data[this.current_map].bots;
+        return this.world.bots;
     }
 
     set bots(bots){
-        World.data[this.current_map].bots = bots;
+        this.world.bots = bots;
     }
 
     get projectiles(){
-        return World.data[this.current_map].projectiles;
+        return this.world.projectiles;
     }
 
     set projectiles(projectiles){
-        World.data[this.current_map].projectiles = projectiles;
+        this.world.projectiles = projectiles;
     }
 
     get scale() {
@@ -158,12 +202,12 @@ class Game {
         this._initial_scale = initial_scale;
     }
 
-    get current_map() {
-        return this._current_map;
+    get current_world() {
+        return this._current_world;
     }
 
-    set current_map(current_map) {
-        this._current_map = current_map;
+    set current_world(current_world) {
+        this._current_map = current_world;
     }
 
     get key() {
@@ -196,5 +240,9 @@ class Game {
 
     set ui(ui) {
         this._ui = ui;
+    }
+
+    get world() {
+        return World.data[this.current_world];
     }
 }

@@ -1,7 +1,7 @@
 class UserInterface {
 
     constructor() {
-        this._tool = "insert";
+        this._tool;
         this._current = null;
 
         this.insert = document.getElementById("insert-picker");
@@ -15,6 +15,12 @@ class UserInterface {
 
     set tool(tool) {
         this._tool = tool;
+
+        if (game.camera.mode === "creator") {
+            if (this.tool === "insert") game.camera.cursor = 'copy';
+            if (this.tool === "trash") game.camera.cursor = 'no-drop';
+            if (this.tool === "select") game.camera.cursor = 'crosshair';            
+        }
 
         this.insert.className = (tool === "insert") ? "select" : "";
         this.trash.className = (tool === "trash") ? "select" : "";
@@ -33,11 +39,12 @@ class UserInterface {
         if (this._current) {
             document.getElementById("collision").checked = this._current.collision;
             document.getElementById("rotate-input").value = this._current.rotate;
+            this.insert.src = this.current.src;
         }
     }
 
     ini() {
-        this.tool = "insert";
+        this.tool = "select";
        
         this.build_ui();
         this.add_listenners();
@@ -115,7 +122,6 @@ class UserInterface {
 
             if (!this.current) { 
                 this.current = obj[key];
-                this.insert.src = obj[key].src;
             }
 
             const img = document.createElement("img");
@@ -130,7 +136,6 @@ class UserInterface {
 
             containter.onclick = () => {
                 this.current = obj[key];
-                this.insert.src = obj[key].src;
                 this.tool = "insert";
             }
 
@@ -143,12 +148,13 @@ class UserInterface {
             case "creator":
                 if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
                 const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
-        
+                pos.x = Math.floor(pos.x);
+                pos.y = Math.floor(pos.y);
+
                 if (this.tool === "insert") {
+                    if (!this.current) return
                     if (!this.current.small) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
-                    const decor = new Decor(this.current);
-                    decor.x = pos.x;
-                    decor.y = pos.y;
+                    const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
                     game.decors.push(decor);
                     this.current = decor;
                 }
@@ -164,7 +170,11 @@ class UserInterface {
                 }
         
                 if (this.tool === "trash") {
-                    game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
+                    let int = false;
+                    game.decors.forEach((item,index)=>{
+                        if (item.x == pos.x && item.y == pos.y) int = index;
+                    })
+                    if (int) game.decors.splice(int,1);
                 }
             break;
         }
@@ -199,6 +209,8 @@ class UserInterface {
         if (game.camera.mode == "creator") {
             for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
         }
+
+        this.tool = this.tool;
     }
 
 }
@@ -206,7 +218,7 @@ class UserInterface {
 function dl_json(json, name){
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
     var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", name + ".json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
