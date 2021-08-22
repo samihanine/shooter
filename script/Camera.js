@@ -60,7 +60,7 @@ class Camera {
         const base = ['pointer', 'copy', 'crosshair', 'no-drop']
         this._cursor = cursor;
         if (base.find(item => cursor == item)) document.body.style.cursor = `${cursor}`;
-        else document.body.style.cursor = `url(${cursor}), auto`;
+        else document.body.style.cursor = `url(${cursor}) 5 5, auto`;
     }
 
     ini(){

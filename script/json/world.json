@@ -2,14 +2,16 @@
     "village": {
         "decors": [],
 
-        "player": {
+        "spawn": {
             "x": 0,
             "y": 4
         },
 
         "characters": [],
 
-        "projectiles": []
+        "projectiles": [],
+
+        "difficulty": 1
     }
 
 }

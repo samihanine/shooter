@@ -42,6 +42,13 @@ body {
             padding-top: 3px;
         }
 
+        & > select {
+            margin: 5px;
+
+            &:focus {
+                outline: none;
+            }
+        }
         &__picker {
             height: calc(100% - 105px - 20px);
             overflow-y: scroll !important;

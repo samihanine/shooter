@@ -6,12 +6,23 @@ class Decor extends Asset {
         settings = settings || {};
 
         /*
-            1 -> pas de collision
-            2 -> collision pour les characters
-            3 -> collisions pour les caracters et les projectiles
+            1 -> no collision
+            2 -> collision for characters
+            3 -> collisions for characters and projectiles
         */
         this._collision_type = settings.collision_type || 1; 
-        this._small = settings.small || false;
+        
+        this._stack = settings.stack || false;
+
+        /*
+            0 -> all
+            1 -> sols
+            2 -> outside assets
+            3 -> interior assets
+            4 -> walls
+        */
+        this._tag = settings.tag || [];
+
 
         // adding the object to the data array
         if (settings._template) {
@@ -28,12 +39,19 @@ class Decor extends Asset {
         return this._collision_type;
     }
 
-    set small(small){
-        this._small = small;
+    set stack(stack){
+        this._stack = stack;
     }
 
-    get small(){
-        return this._small;
+    get stack(){
+        return this._stack;
     }
 
+    set tag(tag){
+        this._tag = tag;
+    }
+
+    get tag(){
+        return this._tag;
+    }
 }

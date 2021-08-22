@@ -1,151 +1,751 @@
 {
     "grass": {
-        "src": "image/tiles/tile_01.png"
+        "src": "image/tiles/tile_01.png",
+        "tag": [1]
     },
     
     "road": {
-        "src": "image/tiles/tile_86.png"
+        "src": "image/tiles/tile_86.png",
+        "tag": [1]
     },
 
-    "water": {
+    "road_white_a": {
+        "src": "image/tiles/tile_62.png",
+        "tag": [1]
+    },
+
+    "road_white_b": {
+        "src": "image/tiles/tile_64.png",
+        "tag": [1]
+    },
+
+    "road_white_c": {
+        "src": "image/tiles/tile_67.png",
+        "tag": [1]
+    },
+
+    "road_white_d": {
+        "src": "image/tiles/tile_89.png",
+        "tag": [1]
+    },
+
+    "road_yellow_a": {
+        "src": "image/tiles/tile_55.png",
+        "tag": [1]
+    },
+
+    "road_yellow_b": {
+        "src": "image/tiles/tile_57.png",
+        "tag": [1]
+    },
+
+    "road_yellow_c": {
+        "src": "image/tiles/tile_60.png",
+        "tag": [1]
+    },
+
+    "road_yellow_d": {
+        "src": "image/tiles/tile_82.png",
+        "tag": [1]
+    },
+
+    "water_a": {
         "src": "image/tiles/tile_19.png",
-        "collision_type": 2
+        "collision_type": 2,
+        "tag": [2]
     },
 
-    "test": {
-        "src": "image/tiles/tile_90.png"
+    "water_b": {
+        "src": "image/tiles/tile_20.png",
+        "collision_type": 2,
+        "tag": [2]
     },
 
-    "bush": {
+    "bush_green": {
         "src": "image/tiles/tile_183.png",
-        "small": true,
-        "collision_type": 2
+        "stack": true,
+        "collision_type": 2,
+        "tag": [2]
     },
 
-    "tree": {
+    "bush_orange": {
+        "src": "image/tiles/tile_186.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [2]
+    },
+
+    "bush_mini_green": {
+        "src": "image/tiles/tile_235.png",
+        "stack": true,
+        "tag": [2]
+    },
+
+    "bush_mini_orange": {
+        "src": "image/tiles/tile_236.png",
+        "stack": true,
+        "tag": [2]
+    },
+
+    "tree_green_a": {
         "src": "image/tiles/tile_181.png",
-        "small": true,
-        "collision_type": 3
+        "stack": true,
+        "collision_type": 3,
+        "tag": [2]
+    },
+
+    "tree_green_b": {
+        "src": "image/tiles/tile_182.png",
+        "stack": true,
+        "collision_type": 3,
+        "tag": [2]
+    },
+
+    "tree_orange_a": {
+        "src": "image/tiles/tile_184.png",
+        "stack": true,
+        "collision_type": 3,
+        "tag": [2]
+    },
+
+    "tree_orange_b": {
+        "src": "image/tiles/tile_185.png",
+        "stack": true,
+        "collision_type": 3,
+        "tag": [2]
     },
 
     "grass_a": {
-        "src": "image/tiles/tile_02.png"
+        "src": "image/tiles/tile_02.png",
+        "tag": [1]
     },
 
     "grass_b": {
-        "src": "image/tiles/tile_03.png"
+        "src": "image/tiles/tile_03.png",
+        "tag": [1]
     },
 
     "grass_c": {
-        "src": "image/tiles/tile_04.png"
+        "src": "image/tiles/tile_04.png",
+        "tag": [1]
     },
 
     "dirt": {
-        "src": "image/tiles/tile_05.png"
+        "src": "image/tiles/tile_05.png",
+        "tag": [1]
     },
 
     "dirt_a": {
-        "src": "image/tiles/tile_06.png"
+        "src": "image/tiles/tile_06.png",
+        "tag": [1]
     },
 
     "wood": {
-        "src": "image/tiles/tile_42.png"
+        "src": "image/tiles/tile_42.png",
+        "tag": [1]
     },
     "wood_a": {
-        "src": "image/tiles/tile_44.png"
+        "src": "image/tiles/tile_44.png",
+        "tag": [1]
     },
     "wood_b": {
-        "src": "image/tiles/tile_46.png"
+        "src": "image/tiles/tile_46.png",
+        "tag": [1]
     },
 
     "wood_dark": {
-        "src": "image/tiles/tile_69.png"
+        "src": "image/tiles/tile_69.png",
+        "tag": [1]
     },
     "wood_dark_a": {
-        "src": "image/tiles/tile_71.png"
+        "src": "image/tiles/tile_71.png",
+        "tag": [1]
     },
     "wood_dark_b": {
-        "src": "image/tiles/tile_73.png"
+        "src": "image/tiles/tile_73.png",
+        "tag": [1]
     },
 
     "wood_light": {
-        "src": "image/tiles/tile_96.png"
+        "src": "image/tiles/tile_96.png",
+        "tag": [1]
     },
     "wood_light_a": {
-        "src": "image/tiles/tile_98.png"
+        "src": "image/tiles/tile_98.png",
+        "tag": [1]
     },
     "wood_light_b": {
-        "src": "image/tiles/tile_100.png"
+        "src": "image/tiles/tile_100.png",
+        "tag": [1]
     },
 
-    "stone": {
-        "src": "image/tiles/tile_07.png"
+    "road_stone": {
+        "src": "image/tiles/tile_07.png",
+        "tag": [1]
     },
 
-    "stone_a": {
-        "src": "image/tiles/tile_08.png"
+    "road_stone_a": {
+        "src": "image/tiles/tile_08.png",
+        "tag": [1]
     },
 
-    "stone_b": {
-        "src": "image/tiles/tile_09.png"
+    "road_stone_b": {
+        "src": "image/tiles/tile_09.png",
+        "tag": [1]
     },
 
-    "stone_c": {
-        "src": "image/tiles/tile_10.png"
+    "road_stone_c": {
+        "src": "image/tiles/tile_10.png",
+        "tag": [1]
     },
 
-    "stone_d": {
-        "src": "image/tiles/tile_11.png"
+    "road_stone_d": {
+        "src": "image/tiles/tile_11.png",
+        "tag": [1]
     },
 
     "wall_orange": {
         "src": "image/tiles/tile_109.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_orange_a": {
         "src": "image/tiles/tile_111.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_orange_b": {
         "src": "image/tiles/tile_112.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_orange_c": {
         "src": "image/tiles/tile_114.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_orange_d": {
         "src": "image/tiles/tile_116.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
+    },
+
+    "wall_orange_e": {
+        "src": "image/tiles/tile_196.png",
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_brown": {
         "src": "image/tiles/tile_118.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_brown_a": {
         "src": "image/tiles/tile_120.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_brown_b": {
         "src": "image/tiles/tile_121.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_brown_c": {
         "src": "image/tiles/tile_123.png",
-        "collision_type": 3
+        "collision_type": 3,
+        "tag": [4]
     },
 
     "wall_brown_d": {
         "src": "image/tiles/tile_125.png",
-        "collision_type": 3
-    }
+        "collision_type": 3,
+        "tag": [4]
+    },
 
+    "wall_brown_e": {
+        "src": "image/tiles/tile_205.png",
+        "collision_type": 3,
+        "tag": [4]
+    },
+
+    "stone_a": {
+        "src": "image/tiles/tile_237.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "stone_b": {
+        "src": "image/tiles/tile_238.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "stone_c": {
+        "src": "image/tiles/tile_239.png",
+        "stack": true,
+        "tag": [2]
+    },
+
+    "knife": {
+        "src": "image/tiles/tile_241.png",
+        "stack": true,
+        "tag": [3]
+    },
+
+    "toaster": {
+        "src": "image/tiles/tile_269.png",
+        "stack": true,
+        "tag": [3]
+    },
+
+    "tv_a": {
+        "src": "image/tiles/tile_532.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "tv_b": {
+        "src": "image/tiles/tile_534.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "tv_c": {
+        "src": "image/tiles/tile_535.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "tv_d": {
+        "src": "image/tiles/tile_536.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "tv_e": {
+        "src": "image/tiles/tile_537.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "sofa_black_a": {
+        "src": "image/tiles/tile_501.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    
+    "sofa_black_b": {
+        "src": "image/tiles/tile_502.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "sofa_orange_a": {
+        "src": "image/tiles/tile_474.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    
+    "sofa_orange_b": {
+        "src": "image/tiles/tile_475.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "sofa_green_a": {
+        "src": "image/tiles/tile_447.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    
+    "sofa_green_b": {
+        "src": "image/tiles/tile_448.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "armchair_a": {
+        "src": "image/tiles/tile_450.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "armchair_b": {
+        "src": "image/tiles/tile_451.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "armchair_c": {
+        "src": "image/tiles/tile_477.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "armchair_d": {
+        "src": "image/tiles/tile_478.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "armchair_e": {
+        "src": "image/tiles/tile_505.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "armchair_f": {
+        "src": "image/tiles/tile_528.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+
+    "window_a": {
+        "src": "image/tiles/tile_491.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [4]
+    },
+
+    "door_a": {
+        "src": "image/tiles/tile_433.png",
+        "stack": true,
+        "tag": [4]
+    },
+    "doormat": {
+        "src": "image/tiles/tile_452.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_a": {
+        "src": "image/tiles/tile_510.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_b": {
+        "src": "image/tiles/tile_511.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_orange_a": {
+        "src": "image/tiles/tile_343.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_orange_b": {
+        "src": "image/tiles/tile_344.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_green_a": {
+        "src": "image/tiles/tile_346.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "carpet_green_b": {
+        "src": "image/tiles/tile_347.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "shard_a": {
+        "src": "image/tiles/tile_262.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_b": {
+        "src": "image/tiles/tile_263.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_c": {
+        "src": "image/tiles/tile_264.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_d": {
+        "src": "image/tiles/tile_265.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_e": {
+        "src": "image/tiles/tile_289.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_f": {
+        "src": "image/tiles/tile_290.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_g": {
+        "src": "image/tiles/tile_291.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_h": {
+        "src": "image/tiles/tile_292.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shard_i": {
+        "src": "image/tiles/tile_293.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "plate_a": {
+        "src": "image/tiles/tile_214.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "plate_b": {
+        "src": "image/tiles/tile_215.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "leaves": {
+        "src": "image/tiles/tile_213.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "plant_a": {
+        "src": "image/tiles/tile_210.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "plant_b": {
+        "src": "image/tiles/tile_240.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "plant_c": {
+        "src": "image/tiles/tile_134.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "bed_simple_green_a": {
+        "src": "image/tiles/tile_102.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_simple_green_b": {
+        "src": "image/tiles/tile_75.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_simple_green_c": {
+        "src": "image/tiles/tile_48.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_green_a": {
+        "src": "image/tiles/tile_103.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_green_b": {
+        "src": "image/tiles/tile_76.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_green_c": {
+        "src": "image/tiles/tile_49.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_simple_orange_a": {
+        "src": "image/tiles/tile_105.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_simple_orange_b": {
+        "src": "image/tiles/tile_78.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_simple_orange_c": {
+        "src": "image/tiles/tile_51.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_orange_a": {
+        "src": "image/tiles/tile_106.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_orange_b": {
+        "src": "image/tiles/tile_79.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "bed_double_orange_c": {
+        "src": "image/tiles/tile_52.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "light_a": {
+        "src": "image/tiles/tile_132.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "light_b": {
+        "src": "image/tiles/tile_133.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "branch": {
+        "src": "image/tiles/tile_161.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "box_a": {
+        "src": "image/tiles/tile_129.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [2]
+    },
+    "box_b": {
+        "src": "image/tiles/tile_156.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [2]
+    },
+    "box_c": {
+        "src": "image/tiles/tile_130.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "box_d": {
+        "src": "image/tiles/tile_157.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "shadow": {
+        "src": "image/tiles/tile_127.png",
+        "stack": true,
+        "tag": [2]
+    },
+    "aquarium_a": {
+        "src": "image/tiles/tile_159.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "aquarium_b": {
+        "src": "image/tiles/tile_160.png",
+        "stack": true,
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "workplan_a": {
+        "src": "image/tiles/tile_267.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "workplan_b": {
+        "src": "image/tiles/tile_268.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "oven_a": {
+        "src": "image/tiles/tile_296.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "oven_b": {
+        "src": "image/tiles/tile_297.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "oven_c": {
+        "src": "image/tiles/tile_324.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "sink": {
+        "src": "image/tiles/tile_323.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "cup_a": {
+        "src": "image/tiles/tile_317.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "cup_b": {
+        "src": "image/tiles/tile_318.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "cup_c": {
+        "src": "image/tiles/tile_319.png",
+        "stack": true,
+        "tag": [3]
+    },
+    "kitchen_furniture_a": {
+        "src": "image/tiles/tile_322.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "kitchen_furniture_b": {
+        "src": "image/tiles/tile_321.png",
+        "collision_type": 2,
+        "tag": [3]
+    },
+    "table_a": {
+        "src": "image/tiles/tile_454.png",
+        "collision_type": 2,
+        "stack": true,
+        "tag": [3]
+    },
+    "table_b": {
+        "src": "image/tiles/tile_453.png",
+        "collision_type": 2,
+        "stack": true,
+        "tag": [3]
+    },
+    "table_c": {
+        "src": "image/tiles/tile_456.png",
+        "collision_type": 2,
+        "stack": true,
+        "tag": [3]
+    },
+    "table_mini": {
+        "src": "image/tiles/tile_457.png",
+        "collision_type": 2,
+        "stack": true,
+        "tag": [3]
+    }
+    
 }

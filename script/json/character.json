@@ -4,7 +4,8 @@
         "life": 500,
         "guns": [
             "shotgun"
-        ]
+        ],
+        "spells": []
     },
     "zombie": {
         "src": "image/entity/zombie1/zoimbie1_hold.png", 
@@ -13,6 +14,7 @@
         "speed": 0.2,
         "spells": [
             "hit"
-        ]
+        ],
+        "guns": []
     }
 }

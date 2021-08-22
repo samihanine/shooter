@@ -43,6 +43,14 @@ body {
   padding-top: 3px;
 }
 
+.interface .creator > select {
+  margin: 5px;
+}
+
+.interface .creator > select:focus {
+  outline: none;
+}
+
 .interface .creator__picker {
   height: calc(100% - 105px - 20px);
   overflow-y: scroll !important;

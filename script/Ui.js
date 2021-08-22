@@ -85,6 +85,25 @@ class UserInterface {
             }
         }
         
+        document.getElementById("current-tag").onchange = e => {
+
+            let all = document.getElementsByClassName("container");
+            for(let i=0; i<all.length; i++) {
+                all[i].style.display = "none";
+            }
+
+            if (e.target.value == 0) {                
+                let tab = document.getElementsByClassName("container");
+                for(let i=0; i<tab.length; i++) {
+                    tab[i].style.display = "flex";
+                }
+            } else {
+                let tab = document.getElementsByClassName(`tag_${e.target.value}`);
+                for(let i=0; i<tab.length; i++) {
+                    tab[i].style.display = "flex";
+                }
+            }
+        }
 
         document.getElementById("zoom-out").onclick = () => {
             game.scale = game.scale - 10;
@@ -132,7 +151,8 @@ class UserInterface {
 
         for (const key in obj) {
             const containter = document.createElement("containter");
-            containter.className = "container";
+            containter.className = `container`;
+            obj[key].tag.forEach(item => containter.className += ` tag_${item}`);
 
             if (!this.current) { 
                 this.current = obj[key];
@@ -169,7 +189,7 @@ class UserInterface {
 
                 if (this.tool === "insert") {
                     if (!this.current) return
-                    if (!this.current.small) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
+                    if (!this.current.stack) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
                     
                     const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
                     game.decors.push(decor);

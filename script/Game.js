@@ -72,8 +72,19 @@ class Game {
     }
 
     ini(){
-        this.player = new Player(Object.assign(Character.data["agent"], this.world.player));
+        this.player = new Player(Object.assign(Character.data["agent"], this.world.spawn));
+        
+        let zombie = Object.assign(Character.data["zombie"], { side: 1 });
 
+        this.characters.push(new Bot(zombie));
+        this.characters.push(this.player);
+
+        this.add_listeners();
+        this.camera.ini();
+        this.ui.ini();
+    }
+
+    add_listeners(){
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
             this.ui.mouse_event(this.camera.mode);
@@ -94,14 +105,6 @@ class Game {
         document.onmousemove = event => {
             this.mouse = { clic: this.mouse?.clic, x: event.clientX, y: event.clientY };
         }
-
-        this.camera.ini();
-        this.ui.ini();
-
-        let zombie = Object.assign(Character.data["zombie"], { side: 2 });
-
-        this.characters.push(new Bot(zombie));
-        this.characters.push(this.player);
     }
 
     mouse_to_pos({ x, y }){

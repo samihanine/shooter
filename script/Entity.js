@@ -81,6 +81,8 @@ class Entity extends Asset {
         this._max_life = max_life > 0 ? max_life : this.max_life;
     }
 
+    /* ---- methods ---- */
+
     moove_left(){
         if (this.test_moove({x: this.x - this.speed, y : this.y })) this.x = this.x - this.speed;        
     }
@@ -110,7 +112,6 @@ class Entity extends Asset {
         return operation;
     }
 
-    /* ---- methods ---- */
     death() {
         console.log("death");
     }
@@ -132,13 +133,6 @@ class Entity extends Asset {
         return enemy;
     }
 }
-
-/*
-    "Projectile" : the entity moves in a straight line towards its target
-    "Bot" : the AI control the entity
-    "Player" : the player control the entity
-    "Static" : the entity never moves
-*/
 
 class Projectile extends Entity {
 
@@ -181,9 +175,10 @@ class Projectile extends Entity {
     }
 
     collision() {
-        const { characters } = this.check_collision();
+        const { characters, projectiles } = this.check_collision();
+        const tab = characters.concat(projectiles);
 
-        characters.forEach(item => {
+        tab.forEach(item => {
             if (item.side != this.side) {
                 item.life -= this.damage;
                 this.death();
@@ -240,6 +235,7 @@ class Character extends Entity {
         this._guns = settings.guns || [];
         this._current_gun = 0;
         this._spells = settings.spells || [];
+        this._motionless = settings.motionless || false;
 
         // adding the object to the data array
         if (settings._template) {
@@ -254,6 +250,14 @@ class Character extends Entity {
     ini() {
         this._guns = this._guns.map(item => new Gun(Object.assign(Gun.data[item], { parent: this })));
         this._spells = this._spells.map(item => new Spell(Object.assign(Spell.data[item], { parent: this })));;
+    }
+
+    get motionless() {
+        return this._motionless;
+    }
+
+    set motionless(motionless) {
+        this._motionless = motionless;
     }
 
     get spells() {
@@ -315,6 +319,8 @@ class Bot extends Character {
     }
 
     moove() {
+        if (this.motionless) return;
+
         if (!this.target) {
             this.target = this.search_enemy();
             return;
@@ -342,8 +348,10 @@ class Bot extends Character {
             }
         }
 
-        let angle = Math.atan2(y2-y1,x2-x1);
-        this._rotate = angle * 180 / Math.PI
+        if (x1 != x2 || y1 != y2) {
+            let angle = Math.atan2(y2-y1,x2-x1);
+            this._rotate = angle * 180 / Math.PI;
+        }
     }
 
     get speed() {
@@ -384,19 +392,6 @@ class Player extends Character {
         else return;
 
         this.update_camera();
-        this.collision();
-    }
-
-    mouse_event() {
-        if (game.mouse?.clic !== 0) return;
-        
-        const { x, y } = game.mouse_to_pos({ x: game.mouse.x, y: game.mouse.y });
-        const projectile = new Projectile(Object.assign(Projectile.data["bullet"],{ parent: this, target_x: x, target_y: y}));
-
-        game.projectiles.push(projectile);
-    }
-
-    collision() {
     }
 
     rotation(){

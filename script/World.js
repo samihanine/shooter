@@ -9,7 +9,9 @@ class World {
         this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
         this._characters = settings.characters ? settings.characters.map(item => new Bots(item)) : [];
         this._projectiles = settings.projectiles ? settings.projectiles.map(item => new Projectile(item)) : [];
-        this._player = settings.player || new Player();
+        
+        this._spawn = settings.spawn || {};
+        this._difficulty = settings.difficulty || 0;
 
         World.data[this._name] = this;
     }
@@ -22,12 +24,20 @@ class World {
         this._decors = decors;
     }
 
-    get player() {
-        return this._player;
+    get spawn() {
+        return this._spawn;
     }
 
-    set player(player) {
-        this._player = player;
+    set spawn(spawn) {
+        this._spawn = spawn;
+    }
+
+    get difficulty() {
+        return this._difficulty;
+    }
+
+    set difficulty(difficulty) {
+        this._difficulty = difficulty;
     }
 
     get characters() {
