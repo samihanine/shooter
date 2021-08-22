@@ -15,7 +15,7 @@ class Game {
     }
 
     load(callback) {
-        const json_files = ["character", "projectile", "decor", "world"];
+        const json_files = ["character", "projectile", "decor", "world", "gun", "spell"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -46,7 +46,20 @@ class Game {
                     case "decor": new Decor(json[key]); break;
                     case "character": new Character(json[key]); break;
                     case "projectile": new Projectile(json[key]); break;
-                    case "world": new World(json[key]); break;
+                    case "world":             
+                        if (window.localStorage.getItem("world")) {
+                            let obj = Object.assign(json[key],{decors: JSON.parse(window.localStorage.getItem("world") || {})})
+                            new World(obj);
+                        } else {
+                            new World(json[key]); 
+                        }
+                    break;
+                    case "gun":
+                        new Gun(json[key]);
+                    break;
+                    case "spell":
+                        new Spell(json[key]);
+                    break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
                     break;
@@ -85,8 +98,10 @@ class Game {
         this.camera.ini();
         this.ui.ini();
 
-        let zombie = Object.assign(Character.data["zombie"], {target: this.player, side: 2 });
-        this.bots.push(new Bot(zombie));
+        let zombie = Object.assign(Character.data["zombie"], { side: 2 });
+
+        this.characters.push(new Bot(zombie));
+        this.characters.push(this.player);
     }
 
     mouse_to_pos({ x, y }){
@@ -102,10 +117,6 @@ class Game {
         })
     }
 
-    draw_player(){
-        this.player.draw();
-    }
-
     draw_projectiles(){
         this.projectiles.forEach(item => {
             item.draw();
@@ -118,14 +129,14 @@ class Game {
         })
     }
 
-    update_bots(){
-        this.bots.forEach(item => {
+    update_characters(){
+        this.characters.forEach(item => {
             item.update();
         })
     }
 
-    draw_bots(){
-        this.bots.forEach(item => {
+    draw_characters(){
+        this.characters.forEach(item => {
             item.draw(this.scale);
         })
     }
@@ -134,22 +145,18 @@ class Game {
         ctx.translate(this.camera.x + window.innerWidth/2, this.camera.y+ window.innerHeight/2);
         
         this.draw_map();
-        this.draw_player();
         this.draw_projectiles();
-        this.draw_bots();
-
+        this.draw_characters();
         this.ui.update();
 
         if (this.camera.mode === "normal") {
-            this.player.update();
             this.update_projectiles();
-            this.update_bots();
+            this.update_characters();
         }
 
         if (this.mouse) this.mouse.clic = -1;
         ctx.translate(-this.camera.x, -this.camera.y);
     }
-
 
     get decors() {
         return this.world.decors;
@@ -167,12 +174,12 @@ class Game {
         this._player = player;
     }
 
-    get bots(){
-        return this.world.bots;
+    get characters(){
+        return this.world.characters;
     }
 
-    set bots(bots){
-        this.world.bots = bots;
+    set characters(characters){
+        this.world.characters = characters;
     }
 
     get projectiles(){

@@ -7,7 +7,7 @@ class World {
         this._name = settings.name || `world_${Object.keys(World.data).length}`;
 
         this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
-        this._bots = settings.bots ? settings.bots.map(item => new Bots(item)) : [];
+        this._characters = settings.characters ? settings.characters.map(item => new Bots(item)) : [];
         this._projectiles = settings.projectiles ? settings.projectiles.map(item => new Projectile(item)) : [];
         this._player = settings.player || new Player();
 
@@ -30,12 +30,12 @@ class World {
         this._player = player;
     }
 
-    get bots() {
-        return this._bots;
+    get characters() {
+        return this._characters;
     }
 
-    set bots(bots) {
-        this._bots = bots;
+    set characters(characters) {
+        this._characters = characters;
     }
 
     get projectiles() {

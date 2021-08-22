@@ -8,12 +8,14 @@ class Entity extends Asset {
 
         this._speed = settings.speed || 1;
         this._max_life = settings.max_life || 100;
-        this._life = this.life || this._max_life;
+        this._life = 0;
 
         this._side = settings.side || 0;
         this._dir = settings.dir || "";
         this._damage = settings.damage || 10;
         this._speed = settings.speed || 0.1;
+
+        this.life = this.life || this._max_life;
     }
 
     /* ---- getters & setters ---- */
@@ -100,7 +102,9 @@ class Entity extends Asset {
         const array = this.check_collision({x: x, y: y }).decors;
         if (!array.length) operation = false;
         array.forEach(item => {
-            if (item.collision) operation = false;
+            if (this instanceof Projectile) {
+                if (item.collision_type == 3) operation = false;
+            } else if (item.collision_type != 1) operation = false;
         });;
 
         return operation;
@@ -109,6 +113,23 @@ class Entity extends Asset {
     /* ---- methods ---- */
     death() {
         console.log("death");
+    }
+
+    search_enemy() {
+        let enemy = null;
+        let distance = Infinity;
+
+        game.characters.forEach(item => {
+            if (item.side != this.side) {
+                let temp_distance = Math.hypot(item.x - this.x, item.y - this.y);
+                if (temp_distance < distance) {
+                    distance = temp_distance;
+                    enemy = item;
+                }
+            }
+        })
+
+        return enemy;
     }
 }
 
@@ -160,9 +181,9 @@ class Projectile extends Entity {
     }
 
     collision() {
-        const { bots, projectiles } = this.check_collision();
+        const { characters } = this.check_collision();
 
-        bots.forEach(item => {
+        characters.forEach(item => {
             if (item.side != this.side) {
                 item.life -= this.damage;
                 this.death();
@@ -216,14 +237,57 @@ class Character extends Entity {
     
         this._pseudo = settings.pseudo || settings.name;
 
+        this._guns = settings.guns || [];
+        this._current_gun = 0;
+        this._spells = settings.spells || [];
+
         // adding the object to the data array
         if (settings._template) {
             this._template = false;
             const key = settings.name || `character_${Object.keys(Character.data).length}`;
             Character.data[key] = this;
         }
+
+        if (Gun.data["shotgun"]) this.ini();
     }
     
+    ini() {
+        this._guns = this._guns.map(item => new Gun(Object.assign(Gun.data[item], { parent: this })));
+        this._spells = this._spells.map(item => new Spell(Object.assign(Spell.data[item], { parent: this })));;
+    }
+
+    get spells() {
+        return this._spells;
+    }
+    
+    set spells(spells) {
+        this._spells = spells;
+    }
+
+    get guns() {
+        return this._guns;
+    }
+    
+    set guns(guns) {
+        this._guns = guns;
+    }
+
+    get current_gun() {
+        return this.guns[this._current_gun];
+    }
+    
+    set current_gun(current_gun) {
+        this._current_gun = current_gun;
+    }
+
+    update() {
+        this.use_capacities();
+    }
+
+    use_capacities() {
+        if (this.current_gun) this.current_gun.use();
+        this.spells.forEach(item => item.use());
+    }
 
 }
 class Bot extends Character {
@@ -245,11 +309,16 @@ class Bot extends Character {
     }
 
     update() {
+        super.update();
+
         this.moove();
     }
 
     moove() {
-        if (!this.target) return;
+        if (!this.target) {
+            this.target = this.search_enemy();
+            return;
+        }
 
         const x1 = Math.floor(this.x);
         const x2 = Math.floor(this.target.x);
@@ -283,10 +352,10 @@ class Bot extends Character {
 
     death() {
         let i;
-        game.bots.forEach((item, index) => {
+        game.characters.forEach((item, index) => {
             if (item === this) i = index;
         })
-        game.bots.splice(i,1);
+        game.characters.splice(i,1);
     }
 }
 
@@ -343,8 +412,13 @@ class Player extends Character {
     }
     
     update() {
+        super.update();
+
         this.key_event();
-        this.mouse_event();
         this.rotation();
+
+        const number = this._life/this.max_life*100;
+        document.getElementById("player-life").style.width = `${number}%`;
     }
+
 }

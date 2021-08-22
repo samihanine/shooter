@@ -111,7 +111,7 @@ body {
         }
 
         &__settings {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             height: calc(100% - 175px - 20px);
@@ -130,6 +130,7 @@ body {
                 p {
                     margin: 0;
                     margin-bottom: 5px;
+                    text-align: center;
                 }
 
                 img {
@@ -142,9 +143,41 @@ body {
                     width: 40px;
                 }
 
+                select {
+                    margin: 5px 0;
+                }
+
             }
         }
 
     }
 
+    .normal {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 100vh;
+
+        &__info {
+            padding: 20px;
+            
+
+            &__life {
+
+                height: 20px;
+                width: 200px;
+                background-color: rgba(255, 0, 0, 0.301);
+                border: solid 1px black;
+
+                &__current {
+                    background-color: red;
+                    height: 100%;
+                    width: 50%;
+                }
+            }
+        }
+    }
 }

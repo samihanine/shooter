@@ -3,6 +3,7 @@ class UserInterface {
     constructor() {
         this._tool = "";
         this._current = null;
+        this._selected = null;
     }
 
     get tool() {
@@ -28,14 +29,27 @@ class UserInterface {
     }
 
     set current(current) {
-        if (this.current) this.current.select = false;
-        if (current) current.select = true;
         this._current = current;
-        
+
         if (this._current) {
-            document.getElementById("collision").checked = this._current.collision;
-            document.getElementById("rotate-input").value = this._current.rotate;
-            document.getElementById("insert-picker").src = this.current.src;
+            document.getElementById("insert-picker").src = this._current.src;
+        }
+    }
+
+    get selected() {
+        return this._selected;
+    }
+
+    set selected(selected) {
+        if (this._selected) this._selected.select = false;
+        this._selected = selected;
+        
+        if (selected) {
+            selected.select = true;
+            document.getElementById("collision-type").value = this._selected.collision_type;
+            document.getElementsByClassName("creator__settings")[0].style.display = "flex";
+        } else {
+            document.getElementsByClassName("creator__settings")[0].style.display = "none";
         }
     }
 
@@ -60,19 +74,17 @@ class UserInterface {
         }
 
         document.getElementById("rotate").onclick = () => {
-            if (this.current) {
-                this.current.rotate = this.current.rotate + 90;
-                document.getElementById("rotate-input").value = this._current.rotate;
+            if (this.selected) {
+                this.selected.rotate = this.selected.rotate + 90;
             }
         }
 
-        document.getElementById("rotate-input").onchange = (e) => {
-            if (this.current) this.current.rotate = e.target.value;
+        document.getElementById("collision-type").onchange = (e) => {
+            if (this.selected) {
+                this.selected.collision_type = e.target.value;
+            }
         }
-
-        document.getElementById("collision").onchange = (e) => {
-            if (this.current) this.current.collision = e.target.checked;
-        }
+        
 
         document.getElementById("zoom-out").onclick = () => {
             game.scale = game.scale - 10;
@@ -87,15 +99,7 @@ class UserInterface {
         }
 
         document.getElementById("save").onclick = () => {
-            let json = "[";
-
-            game.decors.forEach(item => {
-                json += JSON.stringify({ x: item.x, y: item.y, src: item.src, collision: item.collision, rotate: item.rotate }) + ",";
-            });
-            json = json.slice(0, -1)
-            json += "]";
-
-            dl_json(json,"test");
+            this.save_map({dl: true})
         };
 
         document.getElementById("close").onclick = () => {
@@ -103,15 +107,29 @@ class UserInterface {
         };
     }
 
+    save_map({ dl }) {
+        let json = "[";
+
+        game.decors.forEach(item => {
+            json += JSON.stringify({ x: item.x, y: item.y, src: item.src, collision_type: item.collision_type, rotate: item.rotate }) + ",";
+        });
+        json = json.slice(0, -1)
+        json += "]";
+
+        if (dl) dl_json(json,"test");
+        else window.localStorage.setItem("world",json);
+    }
+
     build_ui() {
         const main = document.getElementsByClassName("creator__picker")[0];
 
-        const obj = Object.keys(Decor.data).sort().reduce(
-            (obj, key) => { 
+        // sort the properties of the object in alphabetical order
+        const obj = Object.keys(Decor.data).sort().reduce((obj, key) => { 
               obj[key] = Decor.data[key]; 
               return obj;
             },{}
         );
+
         for (const key in obj) {
             const containter = document.createElement("containter");
             containter.className = "container";
@@ -140,6 +158,8 @@ class UserInterface {
     }
 
     mouse_event(mode) {
+        this.save_map({dl: false});
+
         switch (mode) {
             case "creator":
                 if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
@@ -150,18 +170,19 @@ class UserInterface {
                 if (this.tool === "insert") {
                     if (!this.current) return
                     if (!this.current.small) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
+                    
                     const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
                     game.decors.push(decor);
-                    this.current = decor;
+                    this.selected = decor;
                 }
         
                 if (this.tool === "select") {
                     const tab = game.decors.filter(item => item.x == pos.x && item.y == pos.y).reverse();
                     if (tab.length) {
                         const obj = tab[0];
-                        this.current = obj;
+                        this.selected = obj;
                     } else {
-                        this.current = null; 
+                        this.selected = null; 
                     }
                 }
         
@@ -199,7 +220,7 @@ class UserInterface {
         for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
 
         if (game.camera.mode == "normal") {
-            for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
+            for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "flex"; }
         }
 
         if (game.camera.mode == "creator") {

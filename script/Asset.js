@@ -119,7 +119,7 @@ class Asset {
 
         return {
             decors: game.decors.filter(item => check(item)),
-            bots: game.bots.filter(item => check(item)),
+            characters: game.characters.filter(item => check(item)),
             projectiles: game.projectiles.filter(item => check(item))
         }
         

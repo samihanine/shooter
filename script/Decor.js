@@ -5,7 +5,12 @@ class Decor extends Asset {
         super(settings);
         settings = settings || {};
 
-        this._collision = settings.collision || false;
+        /*
+            1 -> pas de collision
+            2 -> collision pour les characters
+            3 -> collisions pour les caracters et les projectiles
+        */
+        this._collision_type = settings.collision_type || 1; 
         this._small = settings.small || false;
 
         // adding the object to the data array
@@ -15,12 +20,12 @@ class Decor extends Asset {
         }
     }
 
-    set collision(collision) {
-        this._collision = collision;
+    set collision_type(collision_type) {
+        this._collision_type = collision_type;
     }
 
-    get collision() {
-        return this._collision;
+    get collision_type() {
+        return this._collision_type;
     }
 
     set small(small){

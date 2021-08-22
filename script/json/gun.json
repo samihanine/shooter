@@ -1,0 +1,6 @@
+{
+    "shotgun": {
+        "src": "https://img.icons8.com/plasticine/1000/ffffff/gun.png",
+        "projectile_key": "bullet"
+    }
+}

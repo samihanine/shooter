@@ -9,7 +9,7 @@
 
     "water": {
         "src": "image/tiles/tile_19.png",
-        "collision": true
+        "collision_type": 2
     },
 
     "test": {
@@ -19,13 +19,13 @@
     "bush": {
         "src": "image/tiles/tile_183.png",
         "small": true,
-        "collision": true
+        "collision_type": 2
     },
 
     "tree": {
         "src": "image/tiles/tile_181.png",
         "small": true,
-        "collision": true
+        "collision_type": 3
     },
 
     "grass_a": {
@@ -100,52 +100,52 @@
 
     "wall_orange": {
         "src": "image/tiles/tile_109.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_orange_a": {
         "src": "image/tiles/tile_111.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_orange_b": {
         "src": "image/tiles/tile_112.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_orange_c": {
         "src": "image/tiles/tile_114.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_orange_d": {
         "src": "image/tiles/tile_116.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_brown": {
         "src": "image/tiles/tile_118.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_brown_a": {
         "src": "image/tiles/tile_120.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_brown_b": {
         "src": "image/tiles/tile_121.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_brown_c": {
         "src": "image/tiles/tile_123.png",
-        "collision": true
+        "collision_type": 3
     },
 
     "wall_brown_d": {
         "src": "image/tiles/tile_125.png",
-        "collision": true
+        "collision_type": 3
     }
 
 }
