@@ -95,7 +95,7 @@ class Asset {
         context.translate(center_x, center_y);
         context.rotate(this.rotate * Math.PI / 180);
         context.translate(-center_x, -center_y);
-
+        
         this.img.draw({ context: context,x: x, y : y, w: w,h :h });
 
         context.restore();

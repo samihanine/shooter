@@ -33,7 +33,6 @@ class Camera {
         const all_mode = ["creator", "normal"];
         
         if (mode === "normal") {
-            game.player.update_camera();
             this.cursor = "https://img.icons8.com/ios-glyphs/20/000000/define-location.png";
         } else {
             this.cursor = "";
@@ -65,6 +64,22 @@ class Camera {
 
     ini(){
         this.mode = "normal";
+    }
+
+    update() {
+
+        if (this.mode == "creator") {
+            if (game.key[39] || game.key[68]) this.x = this.x - this.speed;
+            else if (game.key[38] || game.key[87]) this.y = this.y + this.speed;
+            else if (game.key[37] || game.key[65]) this.x = this.x + this.speed;
+            else if (game.key[40] || game.key[83]) this.y = this.y - this.speed;
+        }
+
+        if (this.mode == "normal") {
+            this.x = -game.player.x*game.scale;
+            this.y = -game.player.y*game.scale;
+        }
+
     }
 
 }

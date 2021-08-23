@@ -8,14 +8,12 @@ class Entity extends Asset {
 
         this._speed = settings.speed || 1;
         this._max_life = settings.max_life || 100;
-        this._life = 0;
+        this._life = settings.max_life;
 
         this._side = settings.side || 0;
         this._dir = settings.dir || "";
         this._damage = settings.damage || 10;
-        this._speed = settings.speed || 0.1;
-
-        this.life = this.life || this._max_life;
+        this._speed = settings.speed || 0.08;
     }
 
     /* ---- getters & setters ---- */
@@ -52,31 +50,25 @@ class Entity extends Asset {
         this._dir = dir;
     }
 
-    get speed() {
-        return this._speed;
-    }
-
-    set speed(speed) {
-        this._speed = speed;
-    }
-
     get life() {
         return this._life;
     }
 
     set life(life) {
-        if (life <= 0) {
-            life = 0;
+        this._life = life;
+
+        if (this._life <= 0) {
+            this._life = 0;
             this.death();
         }
 
-        this._life = (this.max_life > life) ? life : this.max_life;
-
+        /*
         if (this instanceof Player) {
             const number = this.life/this.max_life*100;
             
             document.getElementById("player-life").style.width = `${number}%`;
         }
+        */
     }
 
     get max_life() {
@@ -151,6 +143,7 @@ class Projectile extends Entity {
             src: settings?.src || "image/entity/projectiles/bullet_a.png",
             side: settings?.parent?.side
         }));
+        
         settings = settings || {};
 
         this._parent = settings.parent;
@@ -242,6 +235,7 @@ class Character extends Entity {
         this._current_gun = 0;
         this._spells = settings.spells || [];
         this._motionless = settings.motionless || false;
+        this._target = settings.target || null;
 
         // adding the object to the data array
         if (settings._template) {
@@ -251,11 +245,6 @@ class Character extends Entity {
         }
 
         if (Gun.data["shotgun"]) this.ini();
-    }
-    
-    ini() {
-        this._guns = this._guns.map(item => new Gun(Object.assign(Gun.data[item], { parent: this })));
-        this._spells = this._spells.map(item => new Spell(Object.assign(Spell.data[item], { parent: this })));;
     }
 
     get motionless() {
@@ -290,26 +279,6 @@ class Character extends Entity {
         this._current_gun = current_gun;
     }
 
-    update() {
-        this.use_capacities();
-    }
-
-    use_capacities() {
-        if (this.current_gun) this.current_gun.use();
-        this.spells.forEach(item => item.use());
-    }
-
-}
-class Bot extends Character {
-
-    constructor(settings) {
-        super(settings);
-
-        settings = settings || {};
-    
-        this._target = settings.target || null;
-    }
-    
     get target() {
         return this._target;
     }
@@ -318,19 +287,48 @@ class Bot extends Character {
         this._target = target;
     }
 
-    update() {
-        super.update();
-
-        this.moove();
+    get is_player() {
+        return this == game.player;
     }
 
-    moove() {
+    ini() {
+        this._guns = this._guns.map(item => new Gun(Object.assign(Gun.data[item], { parent: this })));
+        this._spells = this._spells.map(item => new Spell(Object.assign(Spell.data[item], { parent: this })));;
+    }
+
+    update() {
+        this.use_capacities();
+
+        if (this.is_player) {
+            this.update_as_player();
+        } else {
+            this.update_as_bot();
+        }
+    }
+
+    use_capacities() {
+        if (this.current_gun) this.current_gun.use();
+
+        this.spells.forEach(item => item.use());
+    }
+
+    update_as_player(){
+        this.rotation();
+
         if (this.motionless) return;
 
-        if (!this.target) {
-            this.target = this.search_enemy();
-            return;
-        }
+        if (game.key[39] || game.key[68]) this.moove_right();
+        else if (game.key[38] || game.key[87]) this.moove_up();
+        else if (game.key[37] || game.key[65]) this.moove_left();
+        else if (game.key[40] || game.key[83]) this.moove_down();
+        else return;
+
+        this.target = this.search_enemy();
+    }
+
+    update_as_bot() {
+        if (this.motionless) return;
+        if (!this.target) { this.target = this.search_enemy(); return; }
 
         const x1 = Math.floor(this.x);
         const x2 = Math.floor(this.target.x);
@@ -345,7 +343,7 @@ class Bot extends Character {
                 this.moove_right();
             }
         }
-        if (y1 !== y2) {
+        else if (y1 !== y2) {
             if (y1 > y2) {
                 this.moove_up();
             }
@@ -353,52 +351,23 @@ class Bot extends Character {
                 this.moove_down();
             }
         }
+        else return;
+        
+        let angle = Math.atan2(y2-y1,x2-x1);
+        this._rotate = angle * 180 / Math.PI;
 
-        if (x1 != x2 || y1 != y2) {
-            let angle = Math.atan2(y2-y1,x2-x1);
-            this._rotate = angle * 180 / Math.PI;
-        }
-    }
-
-    get speed() {
-        return this._speed*0.1;
+        this.target = this.search_enemy();
     }
 
     death() {
         let i;
+
         game.characters.forEach((item, index) => {
-            if (item === this) i = index;
+            if (item === this) {
+                i = index;
+            }
         })
         game.characters.splice(i,1);
-    }
-
-}
-
-class Player extends Character {
-
-    constructor(settings) {
-        super(settings);
-
-        settings = settings || {};
-    }
-
-    update_camera() {
-        game.camera.x = -this.x*game.scale;
-        game.camera.y = -this.y*game.scale;
-    }
-
-    death() {
-        super.death();
-    }
-
-    key_event(){
-        if (game.key[39] || game.key[68]) this.moove_right();
-        else if (game.key[38] || game.key[87]) this.moove_up();
-        else if (game.key[37] || game.key[65]) this.moove_left();
-        else if (game.key[40] || game.key[83]) this.moove_down();
-        else return;
-
-        this.update_camera();
     }
 
     rotation(){
@@ -412,12 +381,6 @@ class Player extends Character {
 
         this.rotate = angle + 180;
     }
-    
-    update() {
-        super.update();
-
-        this.key_event();
-        this.rotation();        
-    }
 
 }
+

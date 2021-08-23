@@ -33,7 +33,7 @@ class Capacity {
     }
 
     get tick(){
-        if (this.parent instanceof Bot) return this._tick + 800;
+        if (!this.parent.is_player) return this._tick + 800;
         return this._tick;
     }
 
@@ -55,6 +55,14 @@ class Capacity {
 
     get isUsable() {
         return (Date.now() - this.time > this.tick);
+    }
+
+    set target(target){
+        if (this.parent) this.parent.target = target;
+    }
+
+    get target(){
+        return this.parent?.target;
     }
 
     use() {
@@ -102,7 +110,7 @@ class Gun extends Capacity {
 
         } else {
                     
-            if (!this.parent.target) return;
+            if (!this.parent.target) { this.target = this.parent.search_enemy(); return; }
             const projectile = new Projectile(Object.assign(Projectile.data[this.projectile_key],{ parent: this.parent, target_x: this.parent.target.x, target_y: this.parent.target.y}));
             game.projectiles.push(projectile);
         
@@ -163,7 +171,6 @@ class Spell extends Capacity {
 
     constructor(settings) {
         super(settings);
-        this._target = settings.target || null;
         this._scope = settings.scope || 1;
 
         // adding the object to the data array
@@ -175,25 +182,16 @@ class Spell extends Capacity {
 
     use() {
         if (!this.isUsable) return;
+        this.target = this.parent.search_enemy();
 
-        if (!this.target) {
-            this.target = this.parent.search_enemy();
-            return;
-        }
+        if (!this.target) return;
 
         let distance = Math.hypot(this.target.x - this.parent.x, this.target.y - this.parent.y);
-        if (distance > this.scope) return;
-
+        if (distance > this.scope+0.5) return;
+        
         this.target.life -= this.parent.damage;
+
         super.use();
-    }
-
-    set target(target){
-        this._target = target;
-    }
-
-    get target(){
-        return this._target;
     }
 
     set scope(scope){

@@ -53,6 +53,77 @@ class UserInterface {
         }
     }
 
+    update() {
+
+        if (game.camera.mode == "creator") this.creator_update();
+
+        if (game.camera.mode == "normal") this.normal_update();
+
+    }
+
+    creator_update() {
+
+        this.save_map({dl: false});
+        game.build_map();
+
+        if (game.mouse?.clic != -1) {
+
+            if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
+
+            const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
+            pos.x = Math.floor(pos.x);
+            pos.y = Math.floor(pos.y);
+
+            if (this.tool === "insert") {
+                if (!this.current) return
+                if (!this.current.stack) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
+                
+                const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
+                game.decors.push(decor);
+                this.selected = decor;
+            }
+    
+            if (this.tool === "select") {
+                const tab = game.decors.filter(item => item.x == pos.x && item.y == pos.y).reverse();
+                if (tab.length) {
+                    const obj = tab[0];
+                    this.selected = obj;
+                } else {
+                    this.selected = null; 
+                }
+            }
+    
+            if (this.tool === "trash") {
+                let int = false;
+                game.decors.forEach((item,index)=>{
+                    if (item.x == pos.x && item.y == pos.y) int = index;
+                })
+                if (int) game.decors.splice(int,1);
+            }
+
+        }
+    }
+
+    normal_update() {}
+
+    change_mode() {
+        const creator_divs = document.getElementsByClassName("creator");
+        const normal_divs = document.getElementsByClassName("normal");
+
+        for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "none"; }
+        for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
+
+        if (game.camera.mode == "normal") {
+            for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "flex"; }
+        }
+
+        if (game.camera.mode == "creator") {
+            for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
+        }
+
+        this.tool = this.tool;
+    }
+
     ini() {
         this.tool = "select";
        
@@ -136,7 +207,7 @@ class UserInterface {
         json = json.slice(0, -1)
         json += "]";
 
-        if (dl) dl_json(json,"test");
+        if (dl) this.dl_json(json,"save");
         else window.localStorage.setItem("world",json);
     }
 
@@ -178,96 +249,14 @@ class UserInterface {
         }
     }
 
-    mouse_event(mode) {
-        switch (mode) {
-            case "creator":
-                if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
-
-                const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
-                pos.x = Math.floor(pos.x);
-                pos.y = Math.floor(pos.y);
-
-                if (pos.x < 0 || pos.y < 0) {
-                    alert('The selected coordinate is negative');
-                    return;
-                }
-
-                if (this.tool === "insert") {
-                    if (!this.current) return
-                    if (!this.current.stack) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
-                    
-                    const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
-                    game.decors.push(decor);
-                    this.selected = decor;
-                }
-        
-                if (this.tool === "select") {
-                    const tab = game.decors.filter(item => item.x == pos.x && item.y == pos.y).reverse();
-                    if (tab.length) {
-                        const obj = tab[0];
-                        this.selected = obj;
-                    } else {
-                        this.selected = null; 
-                    }
-                }
-        
-                if (this.tool === "trash") {
-                    let int = false;
-                    game.decors.forEach((item,index)=>{
-                        if (item.x == pos.x && item.y == pos.y) int = index;
-                    })
-                    if (int) game.decors.splice(int,1);
-                }
-            break;
-        }
-
-
+    dl_json(json, name){
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
+        let downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", name + ".json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 
-    key_event() {
-        switch (game.camera.mode) {
-            case "creator":
-                if (game.key[39] || game.key[68]) game.camera.x = game.camera.x - game.camera.speed;
-                else if (game.key[38] || game.key[87]) game.camera.y = game.camera.y + game.camera.speed;
-                else if (game.key[37] || game.key[65]) game.camera.x = game.camera.x + game.camera.speed;
-                else if (game.key[40] || game.key[83]) game.camera.y = game.camera.y - game.camera.speed;
-
-                this.save_map({dl: false});
-                game.build_map();
-            break;
-        }
-    }
-
-    update() {
-        this.key_event();
-    }
-
-    change_mode() {
-        const creator_divs = document.getElementsByClassName("creator");
-        const normal_divs = document.getElementsByClassName("normal");
-
-        for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "none"; }
-        for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
-
-        if (game.camera.mode == "normal") {
-            for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "flex"; }
-        }
-
-        if (game.camera.mode == "creator") {
-            for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
-        }
-
-        this.tool = this.tool;
-    }
-
-}
-
-function dl_json(json, name){
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", name + ".json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
 }

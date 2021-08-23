@@ -14,6 +14,8 @@ class Game {
         this._player = null;
 
         this.background_canvas = document.createElement('canvas');
+        this.background_padding = { x: 0, y: 0 };
+
         this._img_load = false;
     }
 
@@ -57,12 +59,8 @@ class Game {
                             new World(json[key]); 
                         }
                     break;
-                    case "gun":
-                        new Gun(json[key]);
-                    break;
-                    case "spell":
-                        new Spell(json[key]);
-                    break;
+                    case "gun": new Gun(json[key]); break;
+                    case "spell": new Spell(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
                     break;
@@ -75,11 +73,17 @@ class Game {
     }
 
     ini(){
-        this.player = new Player(Object.assign(Character.data["agent"], this.world.spawn));
+        this.player = new Character(Object.assign(Character.data["agent"], this.world.spawn));
         
-        let zombie = Object.assign(Character.data["zombie"], { side: 1 });
+        let zombie2 = Object.assign(Character.data["zombie"], { side: 0, y : 10 });
+        this.characters.push(new Character(zombie2));
 
-        this.characters.push(new Bot(zombie));
+        let zombie1 = Object.assign(Character.data["zombie"], { side: 1, y : 5 });
+        this.characters.push(new Character(zombie1));
+
+        let zombie3 = Object.assign(Character.data["zombie"], { side: 1, y: 0 });
+        this.characters.push(new Character(zombie3));
+
         this.characters.push(this.player);
 
         this.add_listeners();
@@ -90,7 +94,6 @@ class Game {
     add_listeners(){
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
-            this.ui.mouse_event(this.camera.mode);
         }
 
         window.addEventListener('keydown', (e) => {
@@ -121,42 +124,46 @@ class Game {
         };
     }
 
-    draw_map() {
-        ctx.drawImage(this.background_canvas,0,0,window.innerWidth,window.innerHeight);
-    }
 
     draw_projectiles(){
-        this.projectiles.forEach(item => {
-            item.draw();
-        })
+        this.projectiles.forEach(item => item.draw());
     }
 
     update_projectiles(){
-        this.projectiles.forEach(item => {
-            item.update();
-        })
+        this.projectiles.forEach(item => item.update());
     }
 
     update_characters(){
-        this.characters.forEach(item => {
-            item.update();
-        })
+        this.characters.forEach(item => item.update());
     }
 
     draw_characters(){
-        this.characters.forEach(item => {
-            item.draw();
-        })
+        this.characters.forEach(item => item.draw());
+    }
+
+    draw_map() {
+        ctx.drawImage(this.background_canvas,-this.background_padding.x,-this.background_padding.y,this.background_canvas.width,this.background_canvas.height);
     }
 
     build_map() {
-        this.background_canvas.width = window.innerWidth;
-        this.background_canvas.height = window.innerHeight;
+        let max_x = 0; let max_y = 0; let min_x = 0; let min_y = 0;
 
-		let ctx2 = this.background_canvas.getContext("2d");
         this.decors.forEach(item => {
-            item.draw({ context: ctx2 });
+            if (item.x > max_x) max_x = item.x;
+            if (item.y > max_y) max_y = item.y;
+            if (item.x < min_x) min_x = item.x;
+            if (item.y < min_y) min_y = item.y;
         })
+
+        this.background_canvas.width = (max_x + -min_x + 1)*this.scale;
+        this.background_canvas.height = (max_y + -min_y + 1)*this.scale;
+        
+		let ctx2 = this.background_canvas.getContext("2d");
+        ctx2.translate(-min_x*this.scale,-min_y*this.scale);
+
+        this.decors.forEach(item => item.draw({ context: ctx2 }));
+
+        this.background_padding = { x: -min_x*this.scale, y: -min_y*this.scale };
     }
 
     update() {
@@ -166,7 +173,9 @@ class Game {
         this.draw_map();
         this.draw_projectiles();
         this.draw_characters();
+
         this.ui.update();
+        this.camera.update();
 
         if (this.camera.mode === "normal") {
             this.update_projectiles();
