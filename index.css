@@ -190,31 +190,93 @@ body {
 
 .interface .normal {
   display: none;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
   position: absolute;
   left: 0;
   top: 0;
-  width: 200px;
+  width: 100vw;
   height: 100vh;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 .interface .normal__info {
-  padding: 20px;
+  padding: 10px;
+}
+
+.interface .normal__info > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 10px;
+}
+
+.interface .normal__info > div img {
+  height: 45px;
+  margin-right: 10px;
 }
 
 .interface .normal__info__life {
+  border-radius: 4px;
   height: 20px;
   width: 200px;
   background-color: rgba(255, 0, 0, 0.301);
-  border: solid 1px black;
+  border: solid 1px grey;
 }
 
 .interface .normal__info__life__current {
   background-color: red;
   height: 100%;
   width: 50%;
+}
+
+.interface .normal__info__energy {
+  border-radius: 4px;
+  height: 20px;
+  width: 200px;
+  background-color: rgba(0, 140, 255, 0.356);
+  border: solid 1px grey;
+}
+
+.interface .normal__info__energy__current {
+  background-color: #008cff;
+  height: 100%;
+  width: 50%;
+}
+
+.interface .normal__gun {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: 10px;
+}
+
+.interface .normal__gun__bullets {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 5px;
+}
+
+.interface .normal__gun__bullets__container img {
+  height: 50px;
+}
+
+.interface .normal__gun__bullets__container p {
+  position: absolute;
+  top: 0px;
+  padding-top: 14px;
+  padding-left: 18px;
+  z-index: 1010;
+  color: white;
+  font-size: 18px;
+  font-weight: 900;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.582);
 }
 /*# sourceMappingURL=index.css.map */

@@ -71,6 +71,12 @@ class Entity extends Asset {
         }
 
         this._life = (this.max_life > life) ? life : this.max_life;
+
+        if (this instanceof Player) {
+            const number = this.life/this.max_life*100;
+            
+            document.getElementById("player-life").style.width = `${number}%`;
+        }
     }
 
     get max_life() {
@@ -365,6 +371,7 @@ class Bot extends Character {
         })
         game.characters.splice(i,1);
     }
+
 }
 
 class Player extends Character {
@@ -386,8 +393,8 @@ class Player extends Character {
 
     key_event(){
         if (game.key[39] || game.key[68]) this.moove_right();
-        else if (game.key[38] || game.key[87] || game.key[90]) this.moove_up();
-        else if (game.key[37] || game.key[65] || game.key[81]) this.moove_left();
+        else if (game.key[38] || game.key[87]) this.moove_up();
+        else if (game.key[37] || game.key[65]) this.moove_left();
         else if (game.key[40] || game.key[83]) this.moove_down();
         else return;
 
@@ -410,10 +417,7 @@ class Player extends Character {
         super.update();
 
         this.key_event();
-        this.rotation();
-
-        const number = this._life/this.max_life*100;
-        document.getElementById("player-life").style.width = `${number}%`;
+        this.rotation();        
     }
 
 }

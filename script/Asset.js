@@ -13,12 +13,7 @@ class Asset {
         this._rotate = settings.rotate || 0;
 
         this._src = settings.src || "image/tiles/tile_03.png";
-        this._img = new Image();
-        this._img.src = this._src;
-        this._img_is_load = false;
-        this._img.onload = () => {
-            this._img_is_load = true;
-        }
+        this._img = ImageManager.get_image(this._src);
     }
 
     get x() {
@@ -83,8 +78,12 @@ class Asset {
         this._rotate = rotate;
     }
 
-    draw(size) {
-        size = size || game.scale;
+    draw(opt) {
+        opt = opt || {};
+        
+        const size = opt.size || game.scale;
+        const context = opt.context || ctx;
+
         const x = this.x*size;
         const y = this.y*size;
         const w = this.w*size;
@@ -92,12 +91,14 @@ class Asset {
         const center_x = x+w/2;
         const center_y = y+h/2;
 
-        ctx.save();
-        ctx.translate(center_x, center_y);
-        ctx.rotate(this.rotate * Math.PI / 180);
-        ctx.translate(-center_x, -center_y);
-        if (this._img_is_load) ctx.drawImage(this._img,x,y,w,h);
-        ctx.restore();
+        context.save();
+        context.translate(center_x, center_y);
+        context.rotate(this.rotate * Math.PI / 180);
+        context.translate(-center_x, -center_y);
+
+        this.img.draw({ context: context,x: x, y : y, w: w,h :h });
+
+        context.restore();
 
         if (this.select && game.camera.mode === "creator") {
             ctx.strokeStyle = "blue";

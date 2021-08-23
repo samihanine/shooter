@@ -76,6 +76,7 @@ class UserInterface {
         document.getElementById("rotate").onclick = () => {
             if (this.selected) {
                 this.selected.rotate = this.selected.rotate + 90;
+                this.current.rotate = this.current.rotate + 90;
             }
         }
 
@@ -178,14 +179,18 @@ class UserInterface {
     }
 
     mouse_event(mode) {
-        this.save_map({dl: false});
-
         switch (mode) {
             case "creator":
                 if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
+
                 const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
                 pos.x = Math.floor(pos.x);
                 pos.y = Math.floor(pos.y);
+
+                if (pos.x < 0 || pos.y < 0) {
+                    alert('The selected coordinate is negative');
+                    return;
+                }
 
                 if (this.tool === "insert") {
                     if (!this.current) return
@@ -215,15 +220,20 @@ class UserInterface {
                 }
             break;
         }
+
+
     }
 
     key_event() {
         switch (game.camera.mode) {
             case "creator":
                 if (game.key[39] || game.key[68]) game.camera.x = game.camera.x - game.camera.speed;
-                else if (game.key[38] || game.key[87] || game.key[90]) game.camera.y = game.camera.y + game.camera.speed;
-                else if (game.key[37] || game.key[65] || game.key[81]) game.camera.x = game.camera.x + game.camera.speed;
+                else if (game.key[38] || game.key[87]) game.camera.y = game.camera.y + game.camera.speed;
+                else if (game.key[37] || game.key[65]) game.camera.x = game.camera.x + game.camera.speed;
                 else if (game.key[40] || game.key[83]) game.camera.y = game.camera.y - game.camera.speed;
+
+                this.save_map({dl: false});
+                game.build_map();
             break;
         }
     }

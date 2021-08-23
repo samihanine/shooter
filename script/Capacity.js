@@ -12,6 +12,7 @@ class Capacity {
         this._tick = settings.tick || 200;
         this._time = Date.now();
         this._parent = settings.parent || null;
+        this._sound = settings.sound || "";
     }
 
     get img(){
@@ -68,6 +69,10 @@ class Gun extends Capacity {
         
         settings = settings || {};
         this._projectile_key = settings.projectile_key || "";
+        this._chargers_size = settings.chargers_size || 8;
+        this._bullets = settings._bullets || this._chargers_size;
+
+        this._chargers = settings._chargers || 3;
 
         // adding the object to the data array
         if (settings._template) {
@@ -76,10 +81,19 @@ class Gun extends Capacity {
         }
     }
 
-    use() {
-        if (!this.isUsable) return
+    draw_ui() {
+        if (this.parent == game.player) {
+            
+            if (this.parent.current_gun == this) {
+                console.log(this.bullets)
+            }
+        }
+    }
 
-        if (this.parent instanceof Player) {
+    use() {
+        if (!this.isUsable) return;
+        
+        if (this.parent === game.player) {
             
             if (!game.mouse || game.mouse?.clic == -1) return;
             const { x, y } = game.mouse_to_pos({ x: game.mouse.x, y: game.mouse.y })
@@ -94,7 +108,16 @@ class Gun extends Capacity {
         
         }
 
+        this.bullets -= 1;
         super.use();
+    }
+
+    get isUsable() {
+        if (!super.isUsable) return false;
+
+        if (this.chargers <= 0 && this.bullets <= 0) return false;
+
+        return true;
     }
 
     set projectile_key(projectile_key){
@@ -104,6 +127,35 @@ class Gun extends Capacity {
     get projectile_key(){
         return this._projectile_key;
     }
+
+    get bullets(){
+        return this._bullets;
+    }
+
+    set bullets(bullets){
+        this._bullets = bullets;
+
+        if (this._bullets == 0) this.chargers -= 1;
+    }
+
+    get chargers_size(){
+        return this._chargers_size;
+    }
+
+    set chargers_size(chargers_size){
+        this._chargers_size = chargers_size;
+    }
+
+    get chargers(){
+        return this._chargers;
+    }
+
+    set chargers(chargers){
+        this._chargers = chargers;
+
+        if (this._chargers > 0) this.bullets = this.chargers_size;
+    }
+
 
 }
 

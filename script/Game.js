@@ -12,6 +12,9 @@ class Game {
         this._camera = new Camera();
         this._ui = new UserInterface();
         this._player = null;
+
+        this.background_canvas = document.createElement('canvas');
+        this._img_load = false;
     }
 
     load(callback) {
@@ -105,6 +108,10 @@ class Game {
         document.onmousemove = event => {
             this.mouse = { clic: this.mouse?.clic, x: event.clientX, y: event.clientY };
         }
+
+        window.addEventListener('resize', () => {
+            this.build_map();
+        });
     }
 
     mouse_to_pos({ x, y }){
@@ -115,9 +122,7 @@ class Game {
     }
 
     draw_map() {
-        this.decors.forEach(item => {
-            item.draw();
-        })
+        ctx.drawImage(this.background_canvas,0,0,window.innerWidth,window.innerHeight);
     }
 
     draw_projectiles(){
@@ -140,13 +145,24 @@ class Game {
 
     draw_characters(){
         this.characters.forEach(item => {
-            item.draw(this.scale);
+            item.draw();
+        })
+    }
+
+    build_map() {
+        this.background_canvas.width = window.innerWidth;
+        this.background_canvas.height = window.innerHeight;
+
+		let ctx2 = this.background_canvas.getContext("2d");
+        this.decors.forEach(item => {
+            item.draw({ context: ctx2 });
         })
     }
 
     update() {
+        if (!this.img_load) return;
         ctx.translate(this.camera.x + window.innerWidth/2, this.camera.y+ window.innerHeight/2);
-        
+
         this.draw_map();
         this.draw_projectiles();
         this.draw_characters();
@@ -200,6 +216,8 @@ class Game {
     set scale(scale) {
         this._scale = (scale > 0 && scale <= 200) ? scale : this.initial_scale;
         document.getElementById("zoom-text").innerHTML = this._scale;
+
+        if (this.img_load) game.build_map();
     }
 
     get initial_scale() {
@@ -248,6 +266,16 @@ class Game {
 
     set ui(ui) {
         this._ui = ui;
+    }
+
+    get img_load() {
+        return this._img_load;
+    }
+
+    set img_load(img_load) {
+        this.build_map();
+
+        this._img_load = img_load;
     }
 
     get world() {
