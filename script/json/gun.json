@@ -2,5 +2,9 @@
     "shotgun": {
         "src": "https://img.icons8.com/plasticine/1000/ffffff/gun.png",
         "projectile_key": "bullet"
+    },
+    "sniper": {
+        "src": "https://img.icons8.com/color/480/000000/sniper-rifle.png",
+        "projectile_key": "bullet"
     }
 }

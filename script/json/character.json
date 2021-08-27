@@ -3,7 +3,8 @@
         "src": "image/entity/soldier1/soldier1_stand.png", 
         "life": 500,
         "guns": [
-            "shotgun"
+            "shotgun",
+            "sniper"
         ],
         "spells": []
     },
@@ -15,8 +16,6 @@
         "spells": [
             "hit"
         ],
-        "guns": [
-            "shotgun"
-        ]
+        "guns": []
     }
 }

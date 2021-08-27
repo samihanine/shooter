@@ -33,8 +33,15 @@ class Capacity {
     }
 
     get tick(){
-        if (!this.parent.is_player) return this._tick + 800;
         return this._tick;
+    }
+
+    set sound(sound){
+        this._sound = sound;
+    }
+
+    get sound(){
+        return this._sound;
     }
 
     set time(time){
@@ -89,21 +96,14 @@ class Gun extends Capacity {
         }
     }
 
-    draw_ui() {
-        if (this.parent == game.player) {
-            
-            if (this.parent.current_gun == this) {
-                console.log(this.bullets)
-            }
-        }
-    }
 
     use() {
         if (!this.isUsable) return;
         
+        
         if (this.parent === game.player) {
             
-            if (!game.mouse || game.mouse?.clic == -1) return;
+            if (game.mouse.clic == -1) return;
             const { x, y } = game.mouse_to_pos({ x: game.mouse.x, y: game.mouse.y })
             const projectile = new Projectile(Object.assign(Projectile.data[this.projectile_key],{ parent: this.parent, target_x: x, target_y: y}));
             game.projectiles.push(projectile);
@@ -111,7 +111,7 @@ class Gun extends Capacity {
         } else {
                     
             if (!this.parent.target) { this.target = this.parent.search_enemy(); return; }
-            const projectile = new Projectile(Object.assign(Projectile.data[this.projectile_key],{ parent: this.parent, target_x: this.parent.target.x, target_y: this.parent.target.y}));
+            const projectile = new Projectile(Object.assign(Projectile.data[this.projectile_key] || {},{ parent: this.parent, target_x: this.parent.target.x, target_y: this.parent.target.y}));
             game.projectiles.push(projectile);
         
         }
@@ -144,6 +144,10 @@ class Gun extends Capacity {
         this._bullets = bullets;
 
         if (this._bullets == 0) this.chargers -= 1;
+
+        if (this.parent == game.player) {
+            game.ui.update_bullets(this);
+        }
     }
 
     get chargers_size(){
@@ -172,6 +176,7 @@ class Spell extends Capacity {
     constructor(settings) {
         super(settings);
         this._scope = settings.scope || 1;
+        this._cost = settings.cost || 0;
 
         // adding the object to the data array
         if (settings._template) {
@@ -182,13 +187,11 @@ class Spell extends Capacity {
 
     use() {
         if (!this.isUsable) return;
-        this.target = this.parent.search_enemy();
-
-        if (!this.target) return;
-
-        let distance = Math.hypot(this.target.x - this.parent.x, this.target.y - this.parent.y);
-        if (distance > this.scope+0.5) return;
         
+        if (this.parent == game.player && !game.key[49]) {
+            return;
+        }
+
         this.target.life -= this.parent.damage;
 
         super.use();
@@ -200,6 +203,26 @@ class Spell extends Capacity {
 
     get scope(){
         return this._scope;
+    }
+
+    set cost(cost){
+        this._cost = cost;
+    }
+
+    get cost(){
+        return this._cost;
+    }
+
+    get isUsable(){
+        if (!super.isUsable) return false;
+
+        this.target = this.parent.search_enemy();
+        if (!this.target) return false;
+
+        let distance = Math.hypot(this.target.x - this.parent.x, this.target.y - this.parent.y);
+        if (distance > this.scope) return false;
+
+        return true;
     }
 
 }

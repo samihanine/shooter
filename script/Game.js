@@ -3,20 +3,21 @@ class Game {
     constructor() {
         this._initial_scale = 50;
         this._scale = this._initial_scale;
-
-        this._key = [];
-        this._mouse;
-
-        this._current_world = "village";
-
-        this._camera = new Camera();
-        this._ui = new UserInterface();
-        this._player = null;
-
         this.background_canvas = document.createElement('canvas');
         this.background_padding = { x: 0, y: 0 };
 
         this._img_load = false;
+
+        this._key = [];
+        this._mouse = { clic: -1, x: 0, y: 0 };
+        this._key_press = "";
+
+        this._current_world = "village";
+        this._camera = new Camera();
+        this._ui = new UserInterface();
+        this._player = null;
+
+        this._coins = 0;
     }
 
     load(callback) {
@@ -75,8 +76,8 @@ class Game {
     ini(){
         this.player = new Character(Object.assign(Character.data["agent"], this.world.spawn));
         
-        let zombie2 = Object.assign(Character.data["zombie"], { side: 0, y : 10 });
-        this.characters.push(new Character(zombie2));
+        //let zombie2 = Object.assign(Character.data["zombie"], { side: 0, y : 10 });
+        //this.characters.push(new Character(zombie2));
 
         let zombie1 = Object.assign(Character.data["zombie"], { side: 1, y : 5 });
         this.characters.push(new Character(zombie1));
@@ -89,6 +90,9 @@ class Game {
         this.add_listeners();
         this.camera.ini();
         this.ui.ini();
+
+        this.player.update_ui();
+        this.coins = 15;
     }
 
     add_listeners(){
@@ -107,6 +111,10 @@ class Game {
         window.addEventListener('keyup', (e) => {
             this.key[e.keyCode] = false;
         });
+
+        document.addEventListener('keypress', (event) => {
+            this.key_press = event.key.toLowerCase();
+        }, false);
 
         document.onmousemove = event => {
             this.mouse = { clic: this.mouse?.clic, x: event.clientX, y: event.clientY };
@@ -164,6 +172,20 @@ class Game {
         this.decors.forEach(item => item.draw({ context: ctx2 }));
 
         this.background_padding = { x: -min_x*this.scale, y: -min_y*this.scale };
+
+        // -----
+        let array = [];
+        for (let j=min_y; j<max_y; j++) {
+            for (let i=min_x; i<max_x; i++) {
+                if (this.decors.filter(item => item.x == i && item.y == j).length) {
+                    const temp_array = this.decors.filter(item => item.x == i && item.y == j && item.collision_type != 1);
+                    if (!temp_array.length) array.push({x: i, y: j, distance: 0});
+                }
+            }
+        }
+        Pathfinding.array = array;
+
+
     }
 
     update() {
@@ -180,10 +202,19 @@ class Game {
         if (this.camera.mode === "normal") {
             this.update_projectiles();
             this.update_characters();
+
+            if (this.scale != window.innerHeight/16) {
+                this.scale = window.innerHeight/16;
+            }
         }
 
         if (this.mouse) this.mouse.clic = -1;
+
+
+
         ctx.translate(-this.camera.x, -this.camera.y);
+
+        
     }
 
     get decors() {
@@ -251,6 +282,24 @@ class Game {
 
     set key(key) {
         this._key = key;
+    }
+
+    get key_press() {
+        return this._key_press;
+    }
+
+    set key_press(key_press) {
+        this._key_press = key_press;
+    }
+
+    get coins() {
+        return this._coins;
+    }
+
+    set coins(coins) {
+        this._coins = coins;
+
+        this.ui.update_coins(coins);
     }
 
     get mouse() {

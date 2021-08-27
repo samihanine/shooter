@@ -4,7 +4,19 @@ class UserInterface {
         this._tool = "";
         this._current = null;
         this._selected = null;
+        this._selected_paint = false;
+        
+        this.tick = 250;
+        this.time = Date.now();
     }
+
+    get selected_paint() {
+        return this._selected_paint;
+    }
+
+    set selected_paint(selected_paint) {
+        this._selected_paint = selected_paint;
+    } 
 
     get tool() {
         return this._tool;
@@ -16,12 +28,15 @@ class UserInterface {
         if (game.camera.mode === "creator") {
             if (this.tool === "insert") game.camera.cursor = 'copy';
             if (this.tool === "trash") game.camera.cursor = 'no-drop';
-            if (this.tool === "select") game.camera.cursor = 'crosshair';            
+            if (this.tool === "select") game.camera.cursor = 'crosshair'; 
+            if (this.tool === "paint") game.camera.cursor = 'grab';      
         }
 
         document.getElementById("insert-picker").className = (tool === "insert") ? "select" : "";
         document.getElementById("trash-picker").className = (tool === "trash") ? "select" : "";
         document.getElementById("select-picker").className = (tool === "select") ? "select" : "";
+
+        this.selected_paint = false;
     }
 
     get current() {
@@ -54,19 +69,23 @@ class UserInterface {
     }
 
     update() {
-
         if (game.camera.mode == "creator") this.creator_update();
 
         if (game.camera.mode == "normal") this.normal_update();
-
     }
 
     creator_update() {
 
-        this.save_map({dl: false});
-        game.build_map();
+        if (Date.now() > this.time + this.tick) {
+            this.save_map({dl: false});
+            game.build_map();
+            this.time = Date.now();
+        }
 
-        if (game.mouse?.clic != -1) {
+        const s = game.decors.filter(item => item.select);
+        if (s[0]) s[0].draw();
+
+        if (game.mouse.clic != -1) {
 
             if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
 
@@ -99,6 +118,27 @@ class UserInterface {
                     if (item.x == pos.x && item.y == pos.y) int = index;
                 })
                 if (int) game.decors.splice(int,1);
+            }
+
+            if (this.tool === "paint") {
+                if (!this.selected_paint) {
+                    this.selected_paint = { x: pos.x, y: pos.y };
+                } else {
+                    let minx = this.selected_paint.x;
+                    let miny = this.selected_paint.y;
+
+                    for (let x=minx; x<=pos.x; x++) {
+                        for (let y=miny; y<=pos.y; y++) {
+                            game.decors = game.decors.filter(item => item.x != x || item.y != y);
+                            if (this.current) {
+                                const decor = new Decor(Object.assign(this.current, {x: x, y: y}));
+                                game.decors.push(decor);
+                            }
+                        }
+                    }
+
+                    this.selected_paint = false;
+                }
             }
 
         }
@@ -142,6 +182,10 @@ class UserInterface {
 
         document.getElementById("trash-picker").onclick = () => {
             this.tool = "trash";
+        }
+
+        document.getElementById("paint-picker").onclick = () => {
+            this.tool = "paint";
         }
 
         document.getElementById("rotate").onclick = () => {
@@ -207,7 +251,10 @@ class UserInterface {
         json = json.slice(0, -1)
         json += "]";
 
-        if (dl) this.dl_json(json,"save");
+        if (dl) {
+            this.dl_json(json,"save");
+            this.dl_canvas(game.background_canvas,"save");
+        }
         else window.localStorage.setItem("world",json);
     }
 
@@ -249,14 +296,66 @@ class UserInterface {
         }
     }
 
+    update_life(percentage) {
+        percentage = percentage < 0 ? 0 : percentage > 100 ? 100 : percentage;
+        console.log(percentage)
+        document.getElementById("player-life").style.width = `${percentage}%`;
+    }
+
+    update_coins(number) {
+        number = number < 0 ? 0 : number;
+        
+        document.getElementById("player-coins").innerHTML = number;
+    }
+
+    update_bullets({ bullets, chargers, chargers_size }) {
+        const main = document.getElementsByClassName("normal__gun__bullets")[0];
+        main.innerHTML = "";
+        main.style.display = "none";
+
+        for(let i=1; i<=chargers; i++) {
+            const container = document.createElement("div");
+            container.className = "normal__gun__bullets__container";
+    
+            const img = document.createElement("img");
+            img.src = "https://img.icons8.com/fluency/480/ffffff/bullet-2.png";
+            img.alt = `bullet icon`;
+    
+            const text = document.createElement("p");
+            text.innerHTML = (i == 1) ? bullets : chargers_size;
+    
+            container.appendChild(img);
+            container.appendChild(text);
+            
+            main.appendChild(container);
+        }
+
+        main.style.display = "flex";
+
+    }
+
+    update_gun(obj) {
+        const img = document.getElementsByClassName("normal__gun__current")[0].firstChild;
+        img.src = obj ? obj.src : "https://lh3.googleusercontent.com/proxy/mEnrCPL0k7m-23vCyg5DO9L5L7ahE4menmQmaWaWWNzuwBJgSodYrBscrPA-KAg3m1AJOIe2oHgxjyNXMyzDPJgfuL-QrpBzDLAO9xzT";
+    }
+
     dl_json(json, name){
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
-        let downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", name + ".json");
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        let link = document.createElement('a');
+        link.setAttribute("href", dataStr);
+        link.setAttribute("download", name + ".json");
+        document.body.appendChild(link); // required for firefox
+        link.click();
+        link.remove();
+    }
+
+    dl_canvas(canvas,name) {
+        var link = document.createElement('a');
+        link.download = name + '.png';
+        link.href = canvas.toDataURL();
+        document.body.appendChild(link); // required for firefox
+        link.click();
+        link.remove();
     }
 
 }

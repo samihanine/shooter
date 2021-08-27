@@ -16,6 +16,7 @@
     <script src="script/Camera.js" type="text/javascript"></script>
     <script src="script/Capacity.js" type="text/javascript"></script>
     <script src="script/ImageManager.js" type="text/javascript"></script>
+    <script src="script/Pathfinding.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -39,39 +40,41 @@
                 </div>
 
                 <div>
-                    <img src="https://img.icons8.com/color/48/ffffff/mana.png"/>
+                    <img src="https://img.icons8.com/cute-clipart/640/000000/coins.png"/>
 
-                    <div class="normal__info__energy">
-    
-                        <div class="normal__info__energy__current" id="player-energy"></div>
-    
-                    </div>
+                    <p class="normal__info__coin" id="player-coins">55</p>
                 </div>
-
-
 
             </div>
 
             <div class="normal__gun">
 
                 <div class="normal__gun__bullets">
-                    <div class="normal__gun__bullets__container">
-                        <img src="https://img.icons8.com/fluency/480/ffffff/bullet-2.png"/>
-                        <p>3</p>
-                    </div>
 
-                    <div class="normal__gun__bullets__container">
-                        <img src="https://img.icons8.com/fluency/480/ffffff/bullet-2.png"/>
-                        <p>8</p>
-                    </div>
-
-                    <div class="normal__gun__bullets__container">
-                        <img src="https://img.icons8.com/fluency/480/ffffff/bullet-2.png"/>
-                        <p>8</p>
-                    </div>
                 </div>
 
+                <div class="normal__gun__current"><img /></div>
+
             </div>
+            <!--
+            <div class="normal__spell">
+                <div class="normal__spell__container">
+                    <img src="https://img.icons8.com/office/500/ffffff/sparring.png" />
+
+                    <div class="normal__spell__container__info">
+                        <div>
+                            <img src="https://img.icons8.com/color/480/ffffff/clock--v1.png"/>
+                            <p>3</p>
+                        </div>
+                        
+                        <div>
+                            <img src="https://img.icons8.com/fluency/480/ffffff/coins.png"/>
+                            <p>3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
 
         </div>
         
@@ -126,7 +129,7 @@
 
             <div class="creator__option">
                 <img src="https://img.icons8.com/ios-glyphs/300/000000/save--v1.png" id="save"/>
-                <img src="https://img.icons8.com/material-outlined/320/000000/settings.png" id="exit"/>
+                <img src="https://img.icons8.com/material-outlined/320/000000/settings.png" id="paint-picker"/>
                 <img src="https://img.icons8.com/windows/500/000000/macos-close.png" id="close"/>
             </div>
         </div>
@@ -134,13 +137,11 @@
     </div>
 
     <script type="text/javascript">
-        let canvas = document.getElementById('canvas');
-        let ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         window.onload = create;
 
-        let game = new Game();
+        const game = new Game();
 
         function create() {
             game.load(update);

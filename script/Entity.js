@@ -62,13 +62,7 @@ class Entity extends Asset {
             this.death();
         }
 
-        /*
-        if (this instanceof Player) {
-            const number = this.life/this.max_life*100;
-            
-            document.getElementById("player-life").style.width = `${number}%`;
-        }
-        */
+        this.update_ui("life");
     }
 
     get max_life() {
@@ -235,16 +229,19 @@ class Character extends Entity {
         this._current_gun = 0;
         this._spells = settings.spells || [];
         this._motionless = settings.motionless || false;
+
         this._target = settings.target || null;
+        this.goal = {};
+        this.path = [];
 
         // adding the object to the data array
         if (settings._template) {
             this._template = false;
             const key = settings.name || `character_${Object.keys(Character.data).length}`;
             Character.data[key] = this;
+        } else {
+            this.ini();
         }
-
-        if (Gun.data["shotgun"]) this.ini();
     }
 
     get motionless() {
@@ -272,11 +269,13 @@ class Character extends Entity {
     }
 
     get current_gun() {
-        return this.guns[this._current_gun];
+        return this._current_gun;
     }
     
     set current_gun(current_gun) {
         this._current_gun = current_gun;
+
+        this.update_ui("gun");
     }
 
     get target() {
@@ -292,8 +291,15 @@ class Character extends Entity {
     }
 
     ini() {
-        this._guns = this._guns.map(item => new Gun(Object.assign(Gun.data[item], { parent: this })));
-        this._spells = this._spells.map(item => new Spell(Object.assign(Spell.data[item], { parent: this })));;
+        this._guns = this._guns.map(item => {
+            if (!Gun.data[item]) return null;
+            return new Gun(Object.assign(Gun.data[item], { parent: this}));
+        })
+
+        this._spells = this._spells.map(item => {
+            if (!Spell.data[item]) return null
+            return new Spell(Object.assign(Spell.data[item], { parent: this }));
+        });
     }
 
     update() {
@@ -307,13 +313,18 @@ class Character extends Entity {
     }
 
     use_capacities() {
-        if (this.current_gun) this.current_gun.use();
-
+        this.guns[this.current_gun]?.use();
+        
         this.spells.forEach(item => item.use());
     }
 
     update_as_player(){
         this.rotation();
+
+        if (game.key_press == "enter") { 
+            this.change_gun();
+            game.key_press = "";
+        }
 
         if (this.motionless) return;
 
@@ -326,14 +337,33 @@ class Character extends Entity {
         this.target = this.search_enemy();
     }
 
+    reload_path() {
+        this.goal.x = Math.round(this.target.x);
+        this.goal.y = Math.round(this.target.y);
+
+        let path = new Pathfinding({ 
+            start: {x: Math.round(this.x), y: Math.round(this.y)}, 
+            end: {x: Math.round(this.target.x), y: Math.round(this.target.y) }
+        }).main().reverse();
+
+        if (path.length) this.path = path;
+    }
+
     update_as_bot() {
         if (this.motionless) return;
         if (!this.target) { this.target = this.search_enemy(); return; }
 
-        const x1 = Math.floor(this.x);
-        const x2 = Math.floor(this.target.x);
-        const y1 = Math.floor(this.y);
-        const y2 = Math.floor(this.target.y);
+        
+        if (!this.goal.x) this.reload_path();
+        
+
+        if (!this.path.length) return;
+
+        const x1 = Math.floor(this.x*10)/10;
+        const y1 = Math.floor(this.y*10)/10;
+
+        const x2 = this.path[0].x;
+        const y2 = this.path[0].y;
 
         if (x1 !== x2) {
             if (x1 > x2) { 
@@ -350,13 +380,17 @@ class Character extends Entity {
             else if (y1 < y2) {
                 this.moove_down();
             }
+        } else {
+            this.path.splice(0, 1);
+            this.target = this.search_enemy();
+            if (Math.hypot(this.goal.x - this.target.x, this.goal.y - this.target.y) > 2) {
+                this.reload_path();
+            }
+            return;
         }
-        else return;
         
         let angle = Math.atan2(y2-y1,x2-x1);
         this._rotate = angle * 180 / Math.PI;
-
-        this.target = this.search_enemy();
     }
 
     death() {
@@ -367,7 +401,12 @@ class Character extends Entity {
                 i = index;
             }
         })
+
+        if (this.side != game.player.side) game.coins += 1;
+
         game.characters.splice(i,1);
+
+
     }
 
     rotation(){
@@ -380,6 +419,25 @@ class Character extends Entity {
         const angle = Math.atan2(y2-y1,x2-x1) * (180/Math.PI);
 
         this.rotate = angle + 180;
+    }
+
+    change_gun() {
+        let nb = this.current_gun + 1;
+        if (nb == this.guns.length) nb = 0;
+
+        this.current_gun = nb;
+    }
+
+    update_ui(text) {
+        if (this != game.player) return;
+
+        text = text || "all";
+
+        console.log(text)
+        
+        if (text == "gun" || text == "all") game.ui.update_gun(this.guns[this.current_gun]);
+        if (text == "bullets" || text == "all") game.ui.update_bullets(this.guns[this.current_gun]);
+        if (text == "life" || text == "all") game.ui.update_life(this.life/this.max_life*100);
     }
 
 }

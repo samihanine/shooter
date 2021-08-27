@@ -13,6 +13,14 @@ body {
   z-index: 100;
 }
 
+.interface * ::-moz-selection {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.interface * ::selection {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 .interface .creator {
   display: none;
   -webkit-box-orient: vertical;
@@ -224,7 +232,7 @@ body {
   height: 20px;
   width: 200px;
   background-color: rgba(255, 0, 0, 0.301);
-  border: solid 1px grey;
+  border: solid 1px black;
 }
 
 .interface .normal__info__life__current {
@@ -233,18 +241,13 @@ body {
   width: 50%;
 }
 
-.interface .normal__info__energy {
-  border-radius: 4px;
-  height: 20px;
-  width: 200px;
-  background-color: rgba(0, 140, 255, 0.356);
-  border: solid 1px grey;
-}
-
-.interface .normal__info__energy__current {
-  background-color: #008cff;
-  height: 100%;
-  width: 50%;
+.interface .normal__info__coin {
+  font-size: 25px;
+  margin: 0;
+  margin-left: 5px;
+  font-weight: 900;
+  color: #ffa835;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.096);
 }
 
 .interface .normal__gun {
@@ -273,10 +276,68 @@ body {
   top: 0px;
   padding-top: 14px;
   padding-left: 18px;
-  z-index: 1010;
+  z-index: 1;
   color: white;
   font-size: 18px;
   font-weight: 900;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.582);
+}
+
+.interface .normal__gun__current img {
+  width: 50px;
+  background-color: rgba(255, 255, 255, 0.404);
+  border-radius: 50%;
+  border: solid 1px black;
+  padding: 5px;
+}
+
+.interface .normal__spell {
+  position: absolute;
+  height: calc(100vh - 20px);
+  width: calc(100vw - 20px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  padding: 10px;
+}
+
+.interface .normal__spell__container > img {
+  height: 100px;
+  border: solid 1px black;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.747);
+  -webkit-box-shadow: rgba(100, 100, 111, 0.555) 0px 7px 29px 0px;
+          box-shadow: rgba(100, 100, 111, 0.555) 0px 7px 29px 0px;
+}
+
+.interface .normal__spell__container__info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+}
+
+.interface .normal__spell__container__info div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.interface .normal__spell__container__info div img {
+  width: 30px;
+  height: 30px;
 }
 /*# sourceMappingURL=index.css.map */
