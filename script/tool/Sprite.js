@@ -1,4 +1,4 @@
-class ImageManager {
+class Sprite {
 
     static data = {};
     static _nb_img_load = 0;
@@ -13,7 +13,7 @@ class ImageManager {
         this._img.src = this._src;
         this._img.onload = () => {
             this.is_load = true;
-            ImageManager.nb_img_load = ImageManager.nb_img_load+1;
+            Sprite.nb_img_load = Sprite.nb_img_load+1;
         }
 
     }
@@ -21,23 +21,23 @@ class ImageManager {
     static get_image(src) {
         if (!src) return null;
 
-        if (!ImageManager.data[src]) ImageManager.data[src] = new ImageManager({ src: src });
+        if (!Sprite.data[src]) Sprite.data[src] = new Sprite({ src: src });
 
-        return ImageManager.data[src];
+        return Sprite.data[src];
     }
 
     static get nb_img() {
-        return Object.keys(ImageManager.data).length;
+        return Object.keys(Sprite.data).length;
     }
 
     static get nb_img_load() {
-        return ImageManager._nb_img_load;
+        return Sprite._nb_img_load;
     }
 
     static set nb_img_load(nb_img_load) {
-        ImageManager._nb_img_load = nb_img_load;
+        Sprite._nb_img_load = nb_img_load;
 
-        if (ImageManager.nb_img_load == ImageManager.nb_img) {
+        if (Sprite.nb_img_load == Sprite.nb_img) {
             game.img_load = true;
         }
     }

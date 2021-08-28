@@ -1,8 +1,11 @@
 class Game {
 
     constructor() {
-        this._initial_scale = 50;
+        this.area = document.getElementsByClassName('ratio')[0].getBoundingClientRect();
+
+        this._initial_scale = this.area.height/16;
         this._scale = this._initial_scale;
+        
 
         this.background_canvas = document.createElement('canvas');
         this.background_padding = { x: 0, y: 0 };
@@ -26,7 +29,7 @@ class Game {
     }
 
     load(callback) {
-        const json_files = ["character", "projectile", "decor", "world", "gun", "spell"];
+        const json_files = ["character", "projectile", "decor", "world", "gun", "spell", "item"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -67,6 +70,7 @@ class Game {
                     break;
                     case "gun": new Gun(json[key]); break;
                     case "spell": new Spell(json[key]); break;
+                    case "item": new Item(json[key]); break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
                     break;
@@ -117,14 +121,23 @@ class Game {
         }
 
         window.addEventListener('resize', () => {
+            this.area = document.getElementsByClassName('ratio')[0].getBoundingClientRect();
+            this.initial_scale = this.area.height/16;
+            this.scale = this.initial_scale;
+
             this.build_map();
         });
     }
 
     mouse_to_pos({ x, y }){
+        let px = (x/this.scale) - (this.camera.x+this.area.width/2+this.area.left)/this.scale;
+        let py = (y/this.scale) - (this.camera.y+this.area.height/2+this.area.top)/this.scale;
+
+        console.log(py)
+        console.log(py)
         return { 
-            x: (x/this.scale) - (this.camera.x+window.innerWidth/2)/this.scale, 
-            y: (y/this.scale) - (this.camera.y+window.innerHeight/2)/this.scale
+            x: px, 
+            y: py
         };
     }
 
@@ -139,6 +152,14 @@ class Game {
 
     update_characters(){
         this.characters.forEach(item => item.update());
+    }
+
+    update_items(){
+        this.items.forEach(item => item.update());
+    }
+
+    draw_items(){
+        this.items.forEach(item => item.draw());
     }
 
     draw_characters(){
@@ -185,11 +206,15 @@ class Game {
 
     update() {
         if (!this.img_load) return;
-        ctx.translate(this.camera.x + window.innerWidth/2, this.camera.y+ window.innerHeight/2);
+        canvas.width = this.area.width;
+        canvas.height = this.area.height;
+
+        ctx.translate(this.camera.x + this.area.width/2, this.camera.y + this.area.height/2);
 
         this.draw_map();
         this.draw_projectiles();
         this.draw_characters();
+        this.draw_items();
         this.ui.update();
         this.camera.update();
 

@@ -5,8 +5,8 @@
         "value": 100
     },
     "munition": {
-        "src": "imgae/item/ammunition.png",
+        "src": "image/item/ammunition.png",
         "key": "munition",
-        "value": 3
+        "value": 1
     }
 }

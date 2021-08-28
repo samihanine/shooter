@@ -1,16 +1,53 @@
+body, html {
+  height: 100%;
+}
+
 body {
   padding: 0;
   margin: 0;
   overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: black;
+  height: 100vh;
+  width: 100vw;
+}
+
+.ratio {
+  background-color: white;
+  width: 100vw;
+  height: calc(9/16 * 100vw);
+  max-width: calc(16/9 * 100vh);
+  max-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+canvas {
+  position: absolute;
 }
 
 .interface {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 100;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 .interface * ::-moz-selection {
@@ -27,11 +64,8 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  position: absolute;
-  left: 0;
-  top: 0;
   width: 200px;
-  height: 100vh;
+  height: 100%;
   border: solid 1px grey;
   background-color: #ffe1badc;
   -webkit-box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -142,7 +176,7 @@ body {
 }
 
 .interface .creator--second {
-  left: calc(100vw - 200px);
+  margin-left: calc(100% - 400px);
 }
 
 .interface .creator__settings {
@@ -198,11 +232,8 @@ body {
 
 .interface .normal {
   display: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -273,8 +304,7 @@ body {
 
 .interface .normal__gun__bullets__container p {
   position: absolute;
-  top: 0px;
-  padding-top: 14px;
+  margin-top: -38px;
   padding-left: 18px;
   z-index: 1;
   color: white;
@@ -293,8 +323,8 @@ body {
 
 .interface .normal__spell {
   position: absolute;
-  height: calc(100vh - 20px);
-  width: calc(100vw - 20px);
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

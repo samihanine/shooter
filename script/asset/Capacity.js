@@ -143,7 +143,10 @@ class Gun extends Capacity {
     set bullets(bullets){
         this._bullets = bullets;
 
-        if (this._bullets == 0) this.chargers -= 1;
+        if (this.bullets == 0) {
+            this.chargers -= 1;
+            if (this.chargers > 0) this.bullets = this.chargers_size;
+        }
 
         if (this.parent == game.player) {
             game.ui.update_bullets(this);
@@ -163,9 +166,10 @@ class Gun extends Capacity {
     }
 
     set chargers(chargers){
+        if (chargers < 0) chargers = 0;
         this._chargers = chargers;
-
-        if (this._chargers > 0) this.bullets = this.chargers_size;
+        if (this.chargers == 1 && this.bullets == 0) this.bullets = this.chargers_size;
+        
     }
 
 

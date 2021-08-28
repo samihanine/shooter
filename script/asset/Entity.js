@@ -276,6 +276,7 @@ class Character extends Entity {
         this._current_gun = current_gun;
 
         this.update_ui("gun");
+        this.update_ui("bullets");
     }
 
     get target() {
@@ -300,8 +301,18 @@ class Character extends Entity {
     }
 
     set munition(munition){
-        this._current_gun[this.current_gun].chargers += munition;
-        this.update_ui("bullets");
+        console.log(munition)
+        if (this.guns[this.current_gun]) {
+            this.guns[this.current_gun].chargers = munition;
+            this.update_ui("bullets");
+        }
+    }
+
+    get munition() {
+        if (this.guns[this.current_gun]) {
+            return this.guns[this.current_gun].chargers;
+        }
+        return null;
     }
 
     ini() {
@@ -354,7 +365,7 @@ class Character extends Entity {
     reload_path() {
         let path = new Pathfinding({ 
             start: {x: Math.round(this.x), y: Math.round(this.y)}, 
-            end: {x: Math.round(this.target.x), y: Math.round(this.target.y)}
+            end: {x: Math.floor(this.target.x + this.target.w/2), y: Math.floor(this.target.y + this.target.h/2)}
         }).main().reverse();
 
         if (path.length) this.path = path;
@@ -364,7 +375,7 @@ class Character extends Entity {
         if (this.motionless) return;
         if (!this.target) { this.target = this.search_enemy(); return; }
         if (this.path == undefined) this.reload_path();
-        if (!this.path.length) this.reload_path();
+        if (!this.path?.length) { this.reload_path(); return; }
 
         let x1 = this.x;
         let y1 = this.y;
@@ -391,13 +402,15 @@ class Character extends Entity {
             }
 
             if (this.x == x2 && this.y == y2) {
-                if (game.distance(this, this.target) < 15 || this.path.length < 10)  {
+                if (game.distance(this, this.target) < 15)  {
                     this.reload_path();
                     this.target = this.search_enemy();
                 }
 
                 this.path.splice(0, 1);
             }
+
+            if (!this.path.length) this.reload_path();
     }
 
     death() {

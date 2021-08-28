@@ -13,7 +13,7 @@ class Asset {
         this._rotate = settings.rotate || 0;
 
         this._src = settings.src || "image/tiles/tile_03.png";
-        this._img = ImageManager.get_image(this._src);
+        this._img = Sprite.get_image(this._src);
     }
 
     get x() {

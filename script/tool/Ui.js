@@ -88,6 +88,7 @@ class UserInterface {
             if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
 
             const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
+            console.log(pos.x)
             pos.x = Math.floor(pos.x);
             pos.y = Math.floor(pos.y);
 

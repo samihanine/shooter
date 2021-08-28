@@ -5,7 +5,7 @@
         "h": 0.2,
         "speed": 0.2,
         "rotate": 90,
-        "damage": 50
+        "damage": 40
     },
     "arrow": {
         "src": "https://img.icons8.com/material/2400/000000/archers-arrow.png",
@@ -13,6 +13,6 @@
         "h": 0.5,
         "speed": 0.2,
         "rotate": 42.5,
-        "damage": 50
+        "damage": 40
     }
 }

@@ -22,6 +22,9 @@ class Pathfinding {
             return { x: item.x, y : item.y, distance: null, previous: null }
         });
 
+        if (!this.array.find(item => this.end.x == item.x && this.end.y == item.y)) return [];
+        if (!this.array.find(item => this.start.x == item.x && this.start.y == item.y)) return [];
+
         // we add the starting point to open_set
         this.open_set.push(this.format_neighbor(this.start,null));
 
@@ -34,12 +37,10 @@ class Pathfinding {
             // if the current point is the end point, we stop the loop
             if (current.x == this.end.x && current.y == this.end.y) {
                 let result = [];
-                
                 while(current != null) {
                     result.push(current);
                     current = current.previous;
                 }
-
                 return result;
             }
 

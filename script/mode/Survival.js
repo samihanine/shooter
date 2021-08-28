@@ -3,10 +3,14 @@ class Survival {
     static data = {
         1: {
             enemies: [
-                { key: "zombie", population: 1 }
+                { key: "zombie", population: 5 }
             ],
-            tick: 15_000,
-            increase_population: 0.25
+            items: [
+                { key: "medical", population: 1 },
+                { key: "munition", population: 1 }
+            ],
+            time_between_waves: 20_000,
+            increase_percentage: 0.25
         }
     };
     
@@ -22,6 +26,7 @@ class Survival {
     update() {
         game.update_projectiles();
         game.update_characters();
+        game.update_items();
 
         if (Date.now() > this.time + this.tick) {
             this.time = Date.now();
@@ -35,16 +40,23 @@ class Survival {
         this.enemies.forEach(item => {
             for(let i =0; i<item.population; i++) {
                 const { x, y } = this.random_pos();
-                const enemie = Object.assign(Character.data[item.key], { side: 1, x: x, y: y});
-                game.characters.push(new Character(enemie));
+                const obj = Object.assign(Character.data[item.key] || {}, { side: 1, x: x, y: y});
+                game.characters.push(new Character(obj));
+            }
+        });
+
+        this.items.forEach(item => {
+            for(let i = 0; i<item.population; i++) {
+                const { x, y } = this.random_pos();
+                const obj = Object.assign(Item.data[item.key] || {}, { x: x, y: y});
+                game.items.push(new Item(obj));
             }
         });
     }
 
     random_pos() {
-        const array = game.decors.filter(item => {
+        const array = Pathfinding.array.filter(item => {
             if (game.distance(item,game.player) <= this.player_distance) return false;
-            if (item.collision_type != 1) return false;
             return true;
         })
 
@@ -59,12 +71,16 @@ class Survival {
         return Survival.data[this.difficulty].enemies;
     }
 
-    get tick() {
-        return Survival.data[this.difficulty].tick;
+    get items() {
+        return Survival.data[this.difficulty].items;
     }
 
-    get increase_population() {
-        return Survival.data[this.difficulty].tick;
+    get tick() {
+        return Survival.data[this.difficulty].time_between_waves;
+    }
+
+    get increase_percentage() {
+        return Survival.data[this.difficulty].increase_percentage;
     }
 
     // ---
