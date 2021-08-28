@@ -4,9 +4,8 @@ class Camera {
         settings = settings || {};
         this._x = settings.x || 0; 
         this._y = settings.y || 0;
-        this._mode = settings.mode || "normal";
         this._speed = settings.speed || 10;
-        this._curosr = settings.curosr || null;
+        this._cursor = settings.cursor || null;
     }
 
     get x() {
@@ -23,24 +22,6 @@ class Camera {
 
     set y(y) {
         this._y = y;
-    }
-
-    get mode() {
-        return this._mode;
-    }
-
-    set mode(mode) {
-        const all_mode = ["creator", "normal"];
-        
-        if (mode === "normal") {
-            this.cursor = "https://img.icons8.com/ios-glyphs/20/000000/define-location.png";
-        } else {
-            this.cursor = "";
-        }
-
-        this._mode = all_mode.find((item) => mode == item) ? mode : this._mode;
-        game.scale = game.initial_scale;
-        game.ui.change_mode();
     }
 
     get speed() {
@@ -62,24 +43,18 @@ class Camera {
         else document.body.style.cursor = `url(${cursor}) 5 5, auto`;
     }
 
-    ini(){
-        this.mode = "normal";
-    }
-
     update() {
-
-        if (this.mode == "creator") {
+        if (game.mode == "creative") {
             if (game.key[39] || game.key[68]) this.x = this.x - this.speed;
             else if (game.key[38] || game.key[87]) this.y = this.y + this.speed;
             else if (game.key[37] || game.key[65]) this.x = this.x + this.speed;
             else if (game.key[40] || game.key[83]) this.y = this.y - this.speed;
         }
 
-        if (this.mode == "normal") {
+        if (game.mode == "survival") {
             this.x = -game.player.x*game.scale;
             this.y = -game.player.y*game.scale;
         }
-
     }
 
 }

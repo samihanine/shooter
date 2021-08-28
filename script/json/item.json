@@ -1,0 +1,12 @@
+{
+    "medical": {
+        "src": "https://img.icons8.com/color/1600/ffffff/doctors-bag.png",
+        "key": "life",
+        "value": 100
+    },
+    "munition": {
+        "src": "imgae/item/ammunition.png",
+        "key": "munition",
+        "value": 3
+    }
+}

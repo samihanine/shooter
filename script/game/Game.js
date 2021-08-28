@@ -3,6 +3,7 @@ class Game {
     constructor() {
         this._initial_scale = 50;
         this._scale = this._initial_scale;
+
         this.background_canvas = document.createElement('canvas');
         this.background_padding = { x: 0, y: 0 };
 
@@ -16,6 +17,10 @@ class Game {
         this._camera = new Camera();
         this._ui = new UserInterface();
         this._player = null;
+
+        this._mode = "survival";
+        this._survival = new Survival();
+        this._creative = new Creative();
 
         this._coins = 0;
     }
@@ -75,24 +80,15 @@ class Game {
 
     ini(){
         this.player = new Character(Object.assign(Character.data["agent"], this.world.spawn));
-        
-        //let zombie2 = Object.assign(Character.data["zombie"], { side: 0, y : 10 });
-        //this.characters.push(new Character(zombie2));
-
-        let zombie1 = Object.assign(Character.data["zombie"], { side: 1, y : 5 });
-        this.characters.push(new Character(zombie1));
-
-        let zombie3 = Object.assign(Character.data["zombie"], { side: 1, y: 0 });
-        this.characters.push(new Character(zombie3));
-
         this.characters.push(this.player);
 
         this.add_listeners();
-        this.camera.ini();
         this.ui.ini();
 
         this.player.update_ui();
         this.coins = 15;
+
+        this.mode = "survival";
     }
 
     add_listeners(){
@@ -104,7 +100,7 @@ class Game {
             this.key[e.keyCode] = true;
 
             if (this.key[32]) {
-                this.camera.mode = (this.camera.mode === "normal") ? "creator" : "normal";
+                this.mode = (this.mode === "survival") ? "creative" : "survival";
             }
         });
         
@@ -174,6 +170,7 @@ class Game {
         this.background_padding = { x: -min_x*this.scale, y: -min_y*this.scale };
 
         // -----
+
         let array = [];
         for (let j=min_y; j<max_y; j++) {
             for (let i=min_x; i<max_x; i++) {
@@ -184,8 +181,6 @@ class Game {
             }
         }
         Pathfinding.array = array;
-
-
     }
 
     update() {
@@ -195,26 +190,23 @@ class Game {
         this.draw_map();
         this.draw_projectiles();
         this.draw_characters();
-
         this.ui.update();
         this.camera.update();
 
-        if (this.camera.mode === "normal") {
-            this.update_projectiles();
-            this.update_characters();
+        if (this.mode === "survival") {
+            this.survival.update();
+        }
 
-            if (this.scale != window.innerHeight/16) {
-                this.scale = window.innerHeight/16;
-            }
+        if (this.mode === "creative") {
+            this.creative.update();
         }
 
         if (this.mouse) this.mouse.clic = -1;
-
-
-
         ctx.translate(-this.camera.x, -this.camera.y);
-
-        
+    }
+    
+    distance(a,b) {
+        return Math.hypot(a.x - b.x, a.y - b.y);
     }
 
     get decors() {
@@ -247,6 +239,14 @@ class Game {
 
     set projectiles(projectiles){
         this.world.projectiles = projectiles;
+    }
+
+    get items(){
+        return this.world.items;
+    }
+
+    set items(items){
+        this.world.items = items;
     }
 
     get scale() {
@@ -338,5 +338,39 @@ class Game {
 
     get world() {
         return World.data[this.current_world];
+    }
+
+    get survival() {
+        return this._survival;
+    }
+
+    set survival(survival) {
+        this._survival = survival;
+    }
+
+    get creative() {
+        return this._creative;
+    }
+
+    set creative(creative) {
+        this._creative = creative;
+    }
+
+    get mode() {
+        return this._mode;
+    }
+
+    set mode(mode) {
+        const all_mode = ["creative", "survival"];
+        
+        if (mode === "survival") {
+            this.cursor = "https://img.icons8.com/ios-glyphs/20/000000/define-location.png";
+        } else {
+            this.cursor = "";
+        }
+
+        this._mode = all_mode.find((item) => mode == item) ? mode : this._mode;
+        this.scale = game.initial_scale;
+        this.ui.change_mode();
     }
 }

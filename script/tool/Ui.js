@@ -25,7 +25,7 @@ class UserInterface {
     set tool(tool) {
         this._tool = tool;
 
-        if (game.camera.mode === "creator") {
+        if (game.mode === "creator") {
             if (this.tool === "insert") game.camera.cursor = 'copy';
             if (this.tool === "trash") game.camera.cursor = 'no-drop';
             if (this.tool === "select") game.camera.cursor = 'crosshair'; 
@@ -69,9 +69,7 @@ class UserInterface {
     }
 
     update() {
-        if (game.camera.mode == "creator") this.creator_update();
-
-        if (game.camera.mode == "normal") this.normal_update();
+        if (game.mode == "creative") this.creator_update();
     }
 
     creator_update() {
@@ -144,8 +142,6 @@ class UserInterface {
         }
     }
 
-    normal_update() {}
-
     change_mode() {
         const creator_divs = document.getElementsByClassName("creator");
         const normal_divs = document.getElementsByClassName("normal");
@@ -153,11 +149,11 @@ class UserInterface {
         for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "none"; }
         for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "none"; }
 
-        if (game.camera.mode == "normal") {
+        if (game.mode == "survival") {
             for(let i=0; i<normal_divs.length; i++){ normal_divs[i].style.display = "flex"; }
         }
 
-        if (game.camera.mode == "creator") {
+        if (game.mode == "creative") {
             for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
         }
 
@@ -238,7 +234,7 @@ class UserInterface {
         };
 
         document.getElementById("close").onclick = () => {
-            game.camera.mode = "normal";
+            game.mode = "normal";
         };
     }
 
@@ -298,7 +294,6 @@ class UserInterface {
 
     update_life(percentage) {
         percentage = percentage < 0 ? 0 : percentage > 100 ? 100 : percentage;
-        console.log(percentage)
         document.getElementById("player-life").style.width = `${percentage}%`;
     }
 

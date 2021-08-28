@@ -83,7 +83,6 @@ class Asset {
         
         const size = opt.size || game.scale;
         const context = opt.context || ctx;
-        const color = opt.color || false;
 
         const x = this.x*size;
         const y = this.y*size;
@@ -96,20 +95,13 @@ class Asset {
         context.translate(center_x, center_y);
         context.rotate(this.rotate * Math.PI / 180);
         context.translate(-center_x, -center_y);
-        
         this.img.draw({ context: context,x: x, y : y, w: w,h :h });
-
         context.restore();
 
-        if (this.select && game.camera.mode === "creator") {
+        if (this.select && game.mode === "creative") {
             ctx.strokeStyle = "blue";
             ctx.lineWeight = 3;
             ctx.strokeRect(x+1, y+1, w-2, h-2);
-        }
-
-        if (color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x,y,w,h);
         }
     }
 

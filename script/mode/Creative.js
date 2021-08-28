@@ -1,0 +1,11 @@
+class Creative {
+
+    constructor() {
+
+    }
+
+    update() {
+
+    }
+    
+}

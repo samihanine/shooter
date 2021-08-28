@@ -17,48 +17,47 @@ class Pathfinding {
     }
 
     main() {
-        // on néttoie la matrice que l'on va utiliser
+        // we clean the matrix we are going to use
         this.array.map(item => { 
-            return { x: item.x, y : item.y, distance: null, precedent: null }}
-        );
+            return { x: item.x, y : item.y, distance: null, previous: null }
+        });
 
-        // on ajoute le point de départ à open_set
-        this.open_set.push(this.start);
+        // we add the starting point to open_set
+        this.open_set.push(this.format_neighbor(this.start,null));
 
         let current = {};
         let loop = 0;
-        while(this.open_set.length && loop < this.array.length) {
-            // on définit le point courrant
+        while (this.open_set.length && loop < this.array.length) {
+            // we define the current point
             current = this.open_set.sort((a,b) => a.distance - b.distance)[0];
 
-            // si le point courrant est le point d'arrivé, on stop la boucle
+            // if the current point is the end point, we stop the loop
             if (current.x == this.end.x && current.y == this.end.y) {
                 let result = [];
-
+                
                 while(current != null) {
                     result.push(current);
-                    current = current.precedent;
+                    current = current.previous;
                 }
 
                 return result;
-                // return game.decors.filter(item => result.filter(item2 => item2.x == item.x && item2.y == item.y).length);
             }
 
-            // on supprime le point courrant d'open_set et on l'ajoute à closed_set
+            // we remove the current point from open_set and add it to closed_set
             let index = this.open_set.indexOf(current);
             this.open_set.splice(index,1);
             this.closed_set.push(current);
 
-            // on ajoute les voisins du point courrant à open_set
+            // we add the neighbors of the current point to open_set
             let neighbor_a = this.array.find(item => this.check_neighbor(item,current.x+1,current.y));
             let neighbor_b = this.array.find(item => this.check_neighbor(item,current.x,current.y+1));
             let neighbor_c = this.array.find(item => this.check_neighbor(item,current.x-1,current.y));
             let neighbor_d = this.array.find(item => this.check_neighbor(item,current.x,current.y-1));
 
-            if (neighbor_a) this.open_set.push(this.format_pos(neighbor_a,current));
-            if (neighbor_b) this.open_set.push(this.format_pos(neighbor_b,current));
-            if (neighbor_c) this.open_set.push(this.format_pos(neighbor_c,current));
-            if (neighbor_d) this.open_set.push(this.format_pos(neighbor_d,current));
+            if (neighbor_a) this.open_set.push(this.format_neighbor(neighbor_a,current));
+            if (neighbor_b) this.open_set.push(this.format_neighbor(neighbor_b,current));
+            if (neighbor_c) this.open_set.push(this.format_neighbor(neighbor_c,current));
+            if (neighbor_d) this.open_set.push(this.format_neighbor(neighbor_d,current));
 
             loop++;
         }
@@ -66,9 +65,9 @@ class Pathfinding {
         return [];
     }
 
-    format_pos(obj,current) {
+    format_neighbor(obj,current) {
         obj.distance = Math.sqrt((this.end.x-obj.x)*(this.end.x-obj.x)+(this.end.y-obj.y)*(this.end.y-obj.y));
-        obj.precedent = current;
+        obj.previous = current;
         return obj;
     }
 

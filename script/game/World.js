@@ -9,9 +9,11 @@ class World {
         this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
         this._characters = settings.characters ? settings.characters.map(item => new Bots(item)) : [];
         this._projectiles = settings.projectiles ? settings.projectiles.map(item => new Projectile(item)) : [];
+        this._items = settings.items ? settings.items.map(item => new Item(item)) : [];
         
         this._spawn = settings.spawn || {};
         this._difficulty = settings.difficulty || 0;
+        
 
         World.data[this._name] = this;
     }
@@ -54,5 +56,13 @@ class World {
 
     set projectiles(projectiles) {
         this._projectiles = projectiles;
+    }
+
+    get items() {
+        return this._items;
+    }
+
+    set items(items) {
+        this._items = items;
     }
 }

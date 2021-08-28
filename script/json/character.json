@@ -1,6 +1,6 @@
 {
     "agent": {
-        "src": "image/entity/soldier1/soldier1_stand.png", 
+        "src": "image/entity/soldier1/soldier1_stand.png",
         "life": 500,
         "guns": [
             "shotgun",
@@ -12,7 +12,7 @@
         "src": "image/entity/zombie1/zoimbie1_hold.png", 
         "life": 100,
         "damage": 20,
-        "speed": 0.02,
+        "speed": 0.03,
         "spells": [
             "hit"
         ],

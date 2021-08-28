@@ -35,7 +35,6 @@ class ImageManager {
     }
 
     static set nb_img_load(nb_img_load) {
-
         ImageManager._nb_img_load = nb_img_load;
 
         if (ImageManager.nb_img_load == ImageManager.nb_img) {

@@ -232,7 +232,7 @@ class Character extends Entity {
 
         this._target = settings.target || null;
         this.goal = {};
-        this.path = [];
+        this.path = undefined;
 
         // adding the object to the data array
         if (settings._template) {
@@ -284,10 +284,24 @@ class Character extends Entity {
 
     set target(target) {
         this._target = target;
+        if (this.target != target) this.reload_path();
     }
 
     get is_player() {
         return this == game.player;
+    }
+
+    get coins() {
+        return game.coins;
+    }
+
+    set coins(coins) {
+        game.coins = coins;;
+    }
+
+    set munition(munition){
+        this._current_gun[this.current_gun].chargers += munition;
+        this.update_ui("bullets");
     }
 
     ini() {
@@ -338,12 +352,9 @@ class Character extends Entity {
     }
 
     reload_path() {
-        this.goal.x = Math.round(this.target.x);
-        this.goal.y = Math.round(this.target.y);
-
         let path = new Pathfinding({ 
             start: {x: Math.round(this.x), y: Math.round(this.y)}, 
-            end: {x: Math.round(this.target.x), y: Math.round(this.target.y) }
+            end: {x: Math.round(this.target.x), y: Math.round(this.target.y)}
         }).main().reverse();
 
         if (path.length) this.path = path;
@@ -352,45 +363,41 @@ class Character extends Entity {
     update_as_bot() {
         if (this.motionless) return;
         if (!this.target) { this.target = this.search_enemy(); return; }
+        if (this.path == undefined) this.reload_path();
+        if (!this.path.length) this.reload_path();
 
+        let x1 = this.x;
+        let y1 = this.y;
+        let x2 = this.path[0].x;
+        let y2 = this.path[0].y;
+
+        this._rotate = Math.atan2(y2-y1,x2-x1) * 180 / Math.PI;
         
-        if (!this.goal.x) this.reload_path();
-        
-
-        if (!this.path.length) return;
-
-        const x1 = Math.floor(this.x*10)/10;
-        const y1 = Math.floor(this.y*10)/10;
-
-        const x2 = this.path[0].x;
-        const y2 = this.path[0].y;
-
-        if (x1 !== x2) {
             if (x1 > x2) { 
                 this.moove_left();
+                if (this.x <= x2) this.x = Math.round(this.x)
             }
             else if (x1 < x2) {
                 this.moove_right();
+                if (this.x >= x2) this.x = Math.round(this.x)
             }
-        }
-        else if (y1 !== y2) {
-            if (y1 > y2) {
+            else if (y1 > y2) {
                 this.moove_up();
+                if (this.y <= y2) this.y = Math.round(this.y)
             }
             else if (y1 < y2) {
                 this.moove_down();
+                if (this.y >= y2) this.y = Math.round(this.y)
             }
-        } else {
-            this.path.splice(0, 1);
-            this.target = this.search_enemy();
-            if (Math.hypot(this.goal.x - this.target.x, this.goal.y - this.target.y) > 2) {
-                this.reload_path();
+
+            if (this.x == x2 && this.y == y2) {
+                if (game.distance(this, this.target) < 15 || this.path.length < 10)  {
+                    this.reload_path();
+                    this.target = this.search_enemy();
+                }
+
+                this.path.splice(0, 1);
             }
-            return;
-        }
-        
-        let angle = Math.atan2(y2-y1,x2-x1);
-        this._rotate = angle * 180 / Math.PI;
     }
 
     death() {
@@ -405,8 +412,6 @@ class Character extends Entity {
         if (this.side != game.player.side) game.coins += 1;
 
         game.characters.splice(i,1);
-
-
     }
 
     rotation(){
@@ -428,17 +433,14 @@ class Character extends Entity {
         this.current_gun = nb;
     }
 
-    update_ui(text) {
+    update_ui(ui) {
         if (this != game.player) return;
 
-        text = text || "all";
-
-        console.log(text)
+        ui = ui || "all";
         
-        if (text == "gun" || text == "all") game.ui.update_gun(this.guns[this.current_gun]);
-        if (text == "bullets" || text == "all") game.ui.update_bullets(this.guns[this.current_gun]);
-        if (text == "life" || text == "all") game.ui.update_life(this.life/this.max_life*100);
+        if (ui == "gun" || ui == "all") game.ui.update_gun(this.guns[this.current_gun]);
+        if (ui == "bullets" || ui == "all") game.ui.update_bullets(this.guns[this.current_gun]);
+        if (ui == "life" || ui == "all") game.ui.update_life(this.life/this.max_life*100);
     }
 
 }
-
