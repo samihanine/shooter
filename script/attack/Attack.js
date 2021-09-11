@@ -37,7 +37,15 @@ class Attack {
     get tick(){
         return this._tick;
     }
+	
+	test(){
+        const tab = [];
 
+        tab.forEach(item => console.log(item));
+
+        console.log("ok")
+    }
+	
     set parent_id(parent_id){
         this._parent_id = parent_id;
     }

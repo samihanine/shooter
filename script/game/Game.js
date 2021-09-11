@@ -108,13 +108,6 @@ class Game {
             }
 
             return;
-
-            let json = JSON.stringify(this.world, replacer);
-            json = json.replaceAll(`"_`,`"`);
-            window.localStorage.setItem("save", json);
-            game.creative.dl_json(json, "test");
-
-            console.log(window.localStorage.getItem("save"));
         }
 
         window.addEventListener('keydown', (e) => {
