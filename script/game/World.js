@@ -6,16 +6,25 @@ class World {
 
         this._name = settings.name || `world_${Object.keys(World.data).length}`;
 
-        this._decors = settings.decors ? settings.decors.map(item => new Decor(item)) : [];
-        this._characters = settings.characters ? settings.characters.map(item => new Bots(item)) : [];
-        this._projectiles = settings.projectiles ? settings.projectiles.map(item => new Projectile(item)) : [];
-        this._items = settings.items ? settings.items.map(item => new Item(item)) : [];
+        this._decors = []
         
+        this._characters = [];
+        this._projectiles = [];
+        this._items = [];
+        this._guns = [];
+        this._spells = [];
+    
         this._spawn = settings.spawn || {};
         this._difficulty = settings.difficulty || 0;
-        
 
         World.data[this._name] = this;
+
+        if (settings.decors) settings.decors.map(item => new Decor(item));
+        if (settings.characters) settings.characters.map(item => new Character(item))
+        if (settings.projectiless) settings.projectiles.map(item => new Projectile(item))
+        if (settings.items) settings.items.map(item => new Item(item))
+        if (settings.guns) settings.guns.map(item => new Gun(item))
+        if (settings.spells) settings.spells.map(item => new Spell(item)) 
     }
 
     get decors() {
@@ -64,5 +73,21 @@ class World {
 
     set items(items) {
         this._items = items;
+    }
+
+    get guns() {
+        return this._guns;
+    }
+
+    set guns(guns) {
+        this._guns = guns;
+    }
+
+    get spells() {
+        return this._spells;
+    }
+
+    set spells(spells) {
+        this._spells = spells;
     }
 }

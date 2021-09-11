@@ -11,6 +11,8 @@ class Item extends Asset {
         if (settings._template) {
             const key = settings.name || `item_${Object.keys(Item.data).length}`;
             Item.data[key] = this;
+        } else {
+            game.items.push(this);
         }
     }
 

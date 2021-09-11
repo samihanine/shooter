@@ -1,17 +1,7 @@
 class Survival {
 
     static data = {
-        1: {
-            enemies: [
-                { key: "zombie", population: 5 }
-            ],
-            items: [
-                { key: "medical", population: 1 },
-                { key: "munition", population: 1 }
-            ],
-            time_between_waves: 20_000,
-            increase_percentage: 0.25
-        }
+
     };
     
     constructor(settings) {
@@ -40,16 +30,15 @@ class Survival {
         this.enemies.forEach(item => {
             for(let i =0; i<item.population; i++) {
                 const { x, y } = this.random_pos();
-                const obj = Object.assign(Character.data[item.key] || {}, { side: 1, x: x, y: y});
-                game.characters.push(new Character(obj));
+                const obj = new Character(Object.assign(Character.data[item.key] || {}, { side: 1, x: x, y: y}));
+                obj.ini();
             }
         });
 
         this.items.forEach(item => {
             for(let i = 0; i<item.population; i++) {
                 const { x, y } = this.random_pos();
-                const obj = Object.assign(Item.data[item.key] || {}, { x: x, y: y});
-                game.items.push(new Item(obj));
+                new Item(Object.assign(Item.data[item.key] || {}, { x: x, y: y}));
             }
         });
     }

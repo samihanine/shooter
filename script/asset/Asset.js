@@ -13,7 +13,7 @@ class Asset {
         this._rotate = settings.rotate || 0;
 
         this._src = settings.src || "image/tiles/tile_03.png";
-        this._img = Sprite.get_image(this._src);
+        this._sprite = Sprite.get_image(this._src);
     }
 
     get x() {
@@ -48,13 +48,13 @@ class Asset {
         this._h = h
     }
 
-    get img(){
-        return this._img;
+    get sprite(){
+        return this._sprite;
     }
 
     set src(url){
         this._src = url;
-        this._img.src = url;
+        this._sprite.src = url;
     }
 
     get src(){
@@ -95,7 +95,7 @@ class Asset {
         context.translate(center_x, center_y);
         context.rotate(this.rotate * Math.PI / 180);
         context.translate(-center_x, -center_y);
-        this.img.draw({ context: context,x: x, y : y, w: w,h :h });
+        this.sprite.draw({ context: context,x: x, y : y, w: w,h :h });
         context.restore();
 
         if (this.select && game.mode === "creative") {

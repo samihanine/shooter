@@ -1,146 +1,8 @@
 class UserInterface {
 
     constructor() {
-        this._tool = "";
-        this._current = null;
-        this._selected = null;
-        this._selected_paint = false;
-        
-        this.tick = 250;
-        this.time = Date.now();
-    }
-
-    get selected_paint() {
-        return this._selected_paint;
-    }
-
-    set selected_paint(selected_paint) {
-        this._selected_paint = selected_paint;
-    } 
-
-    get tool() {
-        return this._tool;
-    }
-
-    set tool(tool) {
-        this._tool = tool;
-
-        if (game.mode === "creator") {
-            if (this.tool === "insert") game.camera.cursor = 'copy';
-            if (this.tool === "trash") game.camera.cursor = 'no-drop';
-            if (this.tool === "select") game.camera.cursor = 'crosshair'; 
-            if (this.tool === "paint") game.camera.cursor = 'grab';      
-        }
-
-        document.getElementById("insert-picker").className = (tool === "insert") ? "select" : "";
-        document.getElementById("trash-picker").className = (tool === "trash") ? "select" : "";
-        document.getElementById("select-picker").className = (tool === "select") ? "select" : "";
-
-        this.selected_paint = false;
-    }
-
-    get current() {
-        return this._current;
-    }
-
-    set current(current) {
-        this._current = current;
-
-        if (this._current) {
-            document.getElementById("insert-picker").src = this._current.src;
-        }
-    }
-
-    get selected() {
-        return this._selected;
-    }
-
-    set selected(selected) {
-        if (this._selected) this._selected.select = false;
-        this._selected = selected;
-        
-        if (selected) {
-            selected.select = true;
-            document.getElementById("collision-type").value = this._selected.collision_type;
-            document.getElementsByClassName("creator__settings")[0].style.display = "flex";
-        } else {
-            document.getElementsByClassName("creator__settings")[0].style.display = "none";
-        }
-    }
-
-    update() {
-        if (game.mode == "creative") this.creator_update();
-    }
-
-    creator_update() {
-
-        if (Date.now() > this.time + this.tick) {
-            this.save_map({dl: false});
-            game.build_map();
-            this.time = Date.now();
-        }
-
-        const s = game.decors.filter(item => item.select);
-        if (s[0]) s[0].draw();
-
-        if (game.mouse.clic != -1) {
-
-            if (game.mouse.x < 200 || game.mouse.x > window.innerWidth - 200) return; 
-
-            const pos = game.mouse_to_pos({x: game.mouse.x, y: game.mouse.y});
-            console.log(pos.x)
-            pos.x = Math.floor(pos.x);
-            pos.y = Math.floor(pos.y);
-
-            if (this.tool === "insert") {
-                if (!this.current) return
-                if (!this.current.stack) game.decors = game.decors.filter(item => item.x != pos.x || item.y != pos.y);
-                
-                const decor = new Decor(Object.assign(this.current, {x: pos.x, y: pos.y}));
-                game.decors.push(decor);
-                this.selected = decor;
-            }
-    
-            if (this.tool === "select") {
-                const tab = game.decors.filter(item => item.x == pos.x && item.y == pos.y).reverse();
-                if (tab.length) {
-                    const obj = tab[0];
-                    this.selected = obj;
-                } else {
-                    this.selected = null; 
-                }
-            }
-    
-            if (this.tool === "trash") {
-                let int = false;
-                game.decors.forEach((item,index)=>{
-                    if (item.x == pos.x && item.y == pos.y) int = index;
-                })
-                if (int) game.decors.splice(int,1);
-            }
-
-            if (this.tool === "paint") {
-                if (!this.selected_paint) {
-                    this.selected_paint = { x: pos.x, y: pos.y };
-                } else {
-                    let minx = this.selected_paint.x;
-                    let miny = this.selected_paint.y;
-
-                    for (let x=minx; x<=pos.x; x++) {
-                        for (let y=miny; y<=pos.y; y++) {
-                            game.decors = game.decors.filter(item => item.x != x || item.y != y);
-                            if (this.current) {
-                                const decor = new Decor(Object.assign(this.current, {x: x, y: y}));
-                                game.decors.push(decor);
-                            }
-                        }
-                    }
-
-                    this.selected_paint = false;
-                }
-            }
-
-        }
+        this.build_ui();
+        this.add_listenners();
     }
 
     change_mode() {
@@ -158,43 +20,36 @@ class UserInterface {
             for(let i=0; i<creator_divs.length; i++){ creator_divs[i].style.display = "flex"; }
         }
 
-        this.tool = this.tool;
-    }
-
-    ini() {
-        this.tool = "select";
-       
-        this.build_ui();
-        this.add_listenners();
+        game.creative.tool = game.creative.tool;
     }
 
     add_listenners() {
         document.getElementById("insert-picker").onclick = () => {
-            this.tool = "insert";
+            game.creative.tool = "insert";
         }
 
         document.getElementById("select-picker").onclick = () => {
-            this.tool = "select";
+            game.creative.tool = "select";
         }
 
         document.getElementById("trash-picker").onclick = () => {
-            this.tool = "trash";
+            game.creative.tool = "trash";
         }
 
         document.getElementById("paint-picker").onclick = () => {
-            this.tool = "paint";
+            game.creative.tool = "paint";
         }
 
         document.getElementById("rotate").onclick = () => {
-            if (this.selected) {
-                this.selected.rotate = this.selected.rotate + 90;
-                this.current.rotate = this.current.rotate + 90;
+            if (game.creative.selected) {
+                game.creative.selected.rotate = game.creative.selected.rotate + 90;
+                game.creative.current.rotate = game.creative.current.rotate + 90;
             }
         }
 
         document.getElementById("collision-type").onchange = (e) => {
-            if (this.selected) {
-                this.selected.collision_type = e.target.value;
+            if (game.creative.selected) {
+                game.creative.selected.collision_type = e.target.value;
             }
         }
         
@@ -231,28 +86,12 @@ class UserInterface {
         }
 
         document.getElementById("save").onclick = () => {
-            this.save_map({dl: true})
+            game.creative.save_map({dl: true})
         };
 
         document.getElementById("close").onclick = () => {
             game.mode = "normal";
         };
-    }
-
-    save_map({ dl }) {
-        let json = "[";
-
-        game.decors.forEach(item => {
-            json += JSON.stringify({ x: item.x, y: item.y, src: item.src, collision_type: item.collision_type, rotate: item.rotate }) + ",";
-        });
-        json = json.slice(0, -1)
-        json += "]";
-
-        if (dl) {
-            this.dl_json(json,"save");
-            this.dl_canvas(game.background_canvas,"save");
-        }
-        else window.localStorage.setItem("world",json);
     }
 
     build_ui() {
@@ -270,8 +109,8 @@ class UserInterface {
             containter.className = `container`;
             obj[key].tag.forEach(item => containter.className += ` tag_${item}`);
 
-            if (!this.current) { 
-                this.current = obj[key];
+            if (!game.creative.current) { 
+                game.creative.current = obj[key];
             }
 
             const img = document.createElement("img");
@@ -285,8 +124,8 @@ class UserInterface {
             containter.appendChild(text);
 
             containter.onclick = () => {
-                this.current = obj[key];
-                this.tool = "insert";
+                game.creative.current = obj[key];
+                game.creative.tool = "insert";
             }
 
             main.appendChild(containter);
@@ -304,7 +143,12 @@ class UserInterface {
         document.getElementById("player-coins").innerHTML = number;
     }
 
-    update_bullets({ bullets, chargers, chargers_size }) {
+    update_bullets(obj) {
+        obj = obj || {};
+        const bullets = obj.bullets || 0;
+        const chargers = obj.chargers || 0;
+        const chargers_size = obj.chargers_size || 0;
+
         const main = document.getElementsByClassName("normal__gun__bullets")[0];
         main.innerHTML = "";
         main.style.display = "none";
@@ -333,25 +177,6 @@ class UserInterface {
     update_gun(obj) {
         const img = document.getElementsByClassName("normal__gun__current")[0].firstChild;
         img.src = obj ? obj.src : "https://lh3.googleusercontent.com/proxy/mEnrCPL0k7m-23vCyg5DO9L5L7ahE4menmQmaWaWWNzuwBJgSodYrBscrPA-KAg3m1AJOIe2oHgxjyNXMyzDPJgfuL-QrpBzDLAO9xzT";
-    }
-
-    dl_json(json, name){
-        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
-        let link = document.createElement('a');
-        link.setAttribute("href", dataStr);
-        link.setAttribute("download", name + ".json");
-        document.body.appendChild(link); // required for firefox
-        link.click();
-        link.remove();
-    }
-
-    dl_canvas(canvas,name) {
-        var link = document.createElement('a');
-        link.download = name + '.png';
-        link.href = canvas.toDataURL();
-        document.body.appendChild(link); // required for firefox
-        link.click();
-        link.remove();
     }
 
 }

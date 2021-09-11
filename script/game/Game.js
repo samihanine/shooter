@@ -5,7 +5,6 @@ class Game {
 
         this._initial_scale = this.area.height/16;
         this._scale = this._initial_scale;
-        
 
         this.background_canvas = document.createElement('canvas');
         this.background_padding = { x: 0, y: 0 };
@@ -18,18 +17,18 @@ class Game {
 
         this._current_world = "village";
         this._camera = new Camera();
-        this._ui = new UserInterface();
+        this._ui;
         this._player = null;
 
         this._mode = "survival";
-        this._survival = new Survival();
-        this._creative = new Creative();
+        this._survival;
+        this._creative;
 
         this._coins = 0;
     }
 
     load(callback) {
-        const json_files = ["character", "projectile", "decor", "world", "gun", "spell", "item"];
+        const json_files = ["character", "projectile", "decor", "world", "gun", "spell", "item", "difficulty"];
         let load = 0; let end = json_files.length;
 
         const end_load = () => {
@@ -71,6 +70,7 @@ class Game {
                     case "gun": new Gun(json[key]); break;
                     case "spell": new Spell(json[key]); break;
                     case "item": new Item(json[key]); break;
+                    case "difficulty": Survival.data[key] = json[key]; break;
                     default:
                         console.log(`The file ${name}.json is not supported by the game.`)
                     break;
@@ -83,21 +83,38 @@ class Game {
     }
 
     ini(){
-        this.player = new Character(Object.assign(Character.data["agent"], this.world.spawn));
-        this.characters.push(this.player);
-
         this.add_listeners();
-        this.ui.ini();
-
-        this.player.update_ui();
-        this.coins = 15;
-
+        this._survival = new Survival();
+        this._creative = new Creative();
+        this._ui = new UserInterface();
         this.mode = "survival";
+
+        this.player = this.world.characters.find(item => item.is_player) || this.world.characters[0];
+
+        game.characters.forEach(item => item.ini());
+        
+        this.player.update_ui();
+
+        this.coins = 15;
     }
 
     add_listeners(){
         document.onmousedown = (event) => {
             this.mouse = { clic: event.button, x: event.clientX, y: event.clientY };
+
+            const replacer = (key,value) => {
+                if (key=="_path" || key=="_target") return undefined;
+                else return value;
+            }
+
+            return;
+
+            let json = JSON.stringify(this.world, replacer);
+            json = json.replaceAll(`"_`,`"`);
+            window.localStorage.setItem("save", json);
+            game.creative.dl_json(json, "test");
+
+            console.log(window.localStorage.getItem("save"));
         }
 
         window.addEventListener('keydown', (e) => {
@@ -133,8 +150,6 @@ class Game {
         let px = (x/this.scale) - (this.camera.x+this.area.width/2+this.area.left)/this.scale;
         let py = (y/this.scale) - (this.camera.y+this.area.height/2+this.area.top)/this.scale;
 
-        console.log(py)
-        console.log(py)
         return { 
             x: px, 
             y: py
@@ -215,7 +230,6 @@ class Game {
         this.draw_projectiles();
         this.draw_characters();
         this.draw_items();
-        this.ui.update();
         this.camera.update();
 
         if (this.mode === "survival") {
@@ -251,7 +265,7 @@ class Game {
     }
 
     get characters(){
-        return this.world.characters;
+        return this.world?.characters;
     }
 
     set characters(characters){
@@ -272,6 +286,22 @@ class Game {
 
     set items(items){
         this.world.items = items;
+    }
+
+    get guns(){
+        return this.world.guns;
+    }
+
+    set guns(guns){
+        this.world.guns = guns;
+    }
+
+    get spells(){
+        return this.world.spells;
+    }
+
+    set spells(spells){
+        this.world.spells = spells;
     }
 
     get scale() {

@@ -28,6 +28,8 @@ class Decor extends Asset {
         if (settings._template) {
             const key = settings.name || `decor_${Object.keys(Decor.data).length}`;
             Decor.data[key] = this;
+        } else {
+            game.decors.push(this);
         }
     }
 

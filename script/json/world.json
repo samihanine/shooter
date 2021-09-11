@@ -7,11 +7,26 @@
             "y": 0
         },
 
-        "characters": [],
+        "characters": [
+            {
+                "src": "image/entity/soldier1/soldier1_stand.png",
+                "max_life": 500,
+                "guns": [
+                    "shotgun",
+                    "sniper"
+                ],
+                "spells": [],
+                "is_player": true
+            }
+        ],
 
         "projectiles": [],
 
         "items": [],
+
+        "spells": [],
+
+        "guns": [],
 
         "difficulty": 1
     }

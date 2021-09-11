@@ -16,6 +16,8 @@
         "spells": [
             "hit"
         ],
-        "guns": []
+        "guns": [
+            "shotgun"
+        ]
     }
 }

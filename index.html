@@ -14,9 +14,11 @@
     <script src="script/asset/Asset.js" type="text/javascript"></script>
     <script src="script/asset/Entity.js" type="text/javascript"></script>
     <script src="script/asset/Decor.js" type="text/javascript"></script>
-    <script src="script/asset/Capacity.js" type="text/javascript"></script>
-    
     <script src="script/asset/Item.js" type="text/javascript"></script>
+
+    <script src="script/attack/Attack.js" type="text/javascript"></script>
+    <script src="script/attack/Gun.js" type="text/javascript"></script>
+    <script src="script/attack/Spell.js" type="text/javascript"></script>
 
     <script src="script/mode/Survival.js" type="text/javascript"></script>
     <script src="script/mode/Creative.js" type="text/javascript"></script>
@@ -155,13 +157,15 @@
         const game = new Game();
 
         const elem = document.body;
+
+        /*
         elem.onclick = () => {
             if (elem.requestFullscreen) {
-            elem.requestFullscreen();
+                elem.requestFullscreen();
+                console.log(elem);
+            }
         }
-        }
-
-
+        */
 
         function create() {
             game.load(update);

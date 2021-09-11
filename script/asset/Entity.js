@@ -131,16 +131,18 @@ class Projectile extends Entity {
     static data = {};
 
     constructor(settings) {
-        super(Object.assign(settings, { 
-            x: settings?.parent?.x + 0.5,
-            y: settings?.parent?.y + 0.5,
-            src: settings?.src || "image/entity/projectiles/bullet_a.png",
-            side: settings?.parent?.side
-        }));
+        super(settings);
         
         settings = settings || {};
 
-        this._parent = settings.parent;
+        this._parent_id = settings.parent_id || -1;
+        if (this.parent) {
+            
+            this.x = this.parent.x + 0.5;
+            this.y = this.parent.y + 0.5;
+            this.side = this.parent.side;
+        }
+
         this._target_x = settings.target_x || this._x;
         this._target_y = settings.target_y || this._y;
         this._angle = Math.atan2(this._target_y-this._y,this._target_x-this.x);
@@ -150,7 +152,13 @@ class Projectile extends Entity {
         if (settings._template) {
             const key = settings.name || `projectile_${Object.keys(Projectile.data).length}`;
             Projectile.data[key] = this;
+        } else {
+            game.projectiles.push(this);
         }
+    }
+
+    get parent(){
+        return Character.getById(this._parent_id);
     }
 
     update() {
@@ -219,11 +227,19 @@ class Character extends Entity {
 
     static data = {}
 
+    static current_id = 0;
+
+    static getById(id) {
+        return game.characters?.find(item => item.id == id);
+    }
+
     constructor(settings) {
         super(settings);
         settings = settings || {};
-    
-        this._pseudo = settings.pseudo || settings.name;
+        
+        // id unique to the character that can be associated with a spell or a gun he owns
+        this.id = Character.current_id;
+        Character.current_id++;
 
         this._guns = settings.guns || [];
         this._current_gun = 0;
@@ -231,8 +247,8 @@ class Character extends Entity {
         this._motionless = settings.motionless || false;
 
         this._target = settings.target || null;
-        this.goal = {};
-        this.path = undefined;
+        this._path = undefined;
+        this._is_player = settings.is_player || false;
 
         // adding the object to the data array
         if (settings._template) {
@@ -240,7 +256,7 @@ class Character extends Entity {
             const key = settings.name || `character_${Object.keys(Character.data).length}`;
             Character.data[key] = this;
         } else {
-            this.ini();
+            game.characters.push(this);
         }
     }
 
@@ -264,8 +280,16 @@ class Character extends Entity {
         return this._guns;
     }
     
-    set guns(guns) {
-        this._guns = guns;
+    set guns(gun) {
+        this._guns = gun;
+    }
+
+    get is_player() {
+        return this._is_player;
+    }
+    
+    set is_player(is_player) {
+        this._is_player = is_player;
     }
 
     get current_gun() {
@@ -279,6 +303,20 @@ class Character extends Entity {
         this.update_ui("bullets");
     }
 
+    // ----
+    
+    get gun() {
+        return game.guns.find(item => item.parent == this && item.key == this.guns[this.current_gun]);
+    }
+
+    get spell() {
+        return this.spells.map(item => {
+            return game.spells.find(item2 => item2.parent == this && item2.key == item);
+        })
+    }
+
+    // ----
+
     get target() {
         return this._target;
     }
@@ -288,9 +326,6 @@ class Character extends Entity {
         if (this.target != target) this.reload_path();
     }
 
-    get is_player() {
-        return this == game.player;
-    }
 
     get coins() {
         return game.coins;
@@ -300,31 +335,40 @@ class Character extends Entity {
         game.coins = coins;;
     }
 
+    get path() {
+        return this._path;
+    }
+
+    set path(path) {
+        this._path = path;
+    }
+
     set munition(munition){
-        console.log(munition)
-        if (this.guns[this.current_gun]) {
-            this.guns[this.current_gun].chargers = munition;
+        if (this.gun) {
+            this.gun.chargers = munition;
             this.update_ui("bullets");
         }
     }
 
     get munition() {
-        if (this.guns[this.current_gun]) {
-            return this.guns[this.current_gun].chargers;
+        if (this.gun) {
+            return this.gun.chargers;
         }
         return null;
     }
 
     ini() {
-        this._guns = this._guns.map(item => {
-            if (!Gun.data[item]) return null;
-            return new Gun(Object.assign(Gun.data[item], { parent: this}));
+        this.guns.forEach(item => {
+            if (Gun.data[item]) {
+                new Gun(Object.assign(Gun.data[item], { parent_id: this.id, key: item }));
+            }
         })
 
-        this._spells = this._spells.map(item => {
-            if (!Spell.data[item]) return null
-            return new Spell(Object.assign(Spell.data[item], { parent: this }));
-        });
+        this.spells.forEach(item => {
+            if (Spell.data[item]) {
+                new Spell(Object.assign(Spell.data[item], { parent_id: this.id, key: item }));
+            }
+        })
     }
 
     update() {
@@ -338,9 +382,9 @@ class Character extends Entity {
     }
 
     use_capacities() {
-        this.guns[this.current_gun]?.use();
+        this.gun?.use();
         
-        this.spells.forEach(item => item.use());
+        this.spell.forEach(item => item?.use());
     }
 
     update_as_player(){
@@ -451,8 +495,8 @@ class Character extends Entity {
 
         ui = ui || "all";
         
-        if (ui == "gun" || ui == "all") game.ui.update_gun(this.guns[this.current_gun]);
-        if (ui == "bullets" || ui == "all") game.ui.update_bullets(this.guns[this.current_gun]);
+        if (ui == "gun" || ui == "all") game.ui.update_gun(this.gun);
+        if (ui == "bullets" || ui == "all") game.ui.update_bullets(this.gun);
         if (ui == "life" || ui == "all") game.ui.update_life(this.life/this.max_life*100);
     }
 

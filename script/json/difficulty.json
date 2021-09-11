@@ -1,0 +1,13 @@
+{
+    "1": {
+        "enemies": [
+            { "key": "zombie", "population": 1 }
+        ],
+        "items": [
+            { "key": "medical", "population": 1 },
+            { "key": "munition", "population": 1 }
+        ],
+        "time_between_waves": 20000,
+        "increase_percentage": 0.25
+    }
+}

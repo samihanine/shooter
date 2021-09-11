@@ -7,6 +7,6 @@
     "munition": {
         "src": "image/item/ammunition.png",
         "key": "munition",
-        "value": 1
+        "value": 3
     }
 }
